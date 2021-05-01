@@ -7,7 +7,7 @@ def ev_generator(rawfile: Path, delta_t_ms: int=1000):
     assert rawfile.suffix == '.raw'
 
     delta_t_us = delta_t_ms * 1000
-    for ev in EventsIterator(str(testfile), delta_t=delta_t_us):
+    for ev in EventsIterator(str(rawfile), delta_t=delta_t_us):
         out = {
             'x': ev['x'].astype('uint16'),
             'y': ev['y'].astype('uint16'),
