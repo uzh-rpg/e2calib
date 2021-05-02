@@ -1,15 +1,11 @@
-from enum import Enum, auto
+from pathlib import Path
 
 import conversion.prophesee
 import conversion.ros
 
 
-class InputFormat(Enum):
-    PROPHESEE = auto()
-    ROSBAG = auto()
-
-def get_generator(input_format: InputFormat, topic: str='/dvs/events'):
-    if input_format == InputFormat.PROPHESEE:
-        return conversion.prophesee.ev_generator
-    assert input_format == InputFormat.ROSBAG
-    return lambda bagpath, delta_t_ms=1000: conversion.ros.ev_generator(bagpath, delta_t_ms=delta_t_ms, topic=topic)
+def get_generator(input_file: Path, delta_t_ms: int=1000, topic: str='/dvs/events'):
+    if input_file.suffix == '.raw':
+        return lambda: conversion.prophesee.ev_generator(input_file, delta_t_ms=delta_t_ms)
+    assert input_file.suffix == '.bag', f'File format {input_file.suffix} is not supported'
+    return lambda: conversion.ros.ev_generator(input_file, delta_t_ms=delta_t_ms, topic=topic)

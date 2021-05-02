@@ -1,3 +1,4 @@
+import argparse
 from pathlib import Path
 
 import conversion.format
@@ -5,27 +6,30 @@ import conversion.h5writer
 
 
 if __name__ == '__main__':
-    proph_generator = conversion.format.get_generator(conversion.format.InputFormat.PROPHESEE)
-    ros_generator = conversion.format.get_generator(conversion.format.InputFormat.ROSBAG, topic='/dvs/events')
+    parser = argparse.ArgumentParser('Convert events to h5 format to prepare for calibration.')
+    parser.add_argument('input_file', help='Path to file which will be converted to hdf5 format.')
+    parser.add_argument('--output_file', '-o', default="", help='Output path for h5 file. Default: Input path but with h5 suffix.')
+    parser.add_argument('--ros_topic', '-rt', default='/dvs/events', help='ROS topic for events if input file is a rosbag.')
 
-    h5writer_proph = conversion.h5writer.H5Writer(Path('proph.h5'))
-    h5writer_ros = conversion.h5writer.H5Writer(Path('ros.h5'))
+    args = parser.parse_args()
 
-    testfile_prophesee = Path('/home/mathias/Documents/projects/cvprw21/opensource/data/conversion_test/proph.raw')
-    testfile_ros = Path('/home/mathias/Documents/projects/cvprw21/opensource/data/conversion_test/ros.bag')
+    input_file = Path(args.input_file)
+    assert input_file.exists()
+    if args.output_file:
+        output_file = Path(args.output_file)
+        assert output_file.suffix == '.h5'
+    else:
+        output_file = Path(input_file).parent / (input_file.stem + '.h5')
+    assert not output_file.exists()
 
-    for event_slice in ros_generator(testfile_ros):
-        h5writer_ros.add_data(
+    rostopic = args.ros_topic
+
+    event_generator = conversion.format.get_generator(input_file, delta_t_ms=1000, topic=rostopic)
+    h5writer = conversion.h5writer.H5Writer(output_file)
+
+    for event_slice in event_generator():
+        h5writer.add_data(
                 event_slice['x'],
                 event_slice['y'],
                 event_slice['p'],
                 event_slice['t'])
-        print(f"t_s = {event_slice['t'][0]}, t_e = {event_slice['t'][-1]}")
-    print('----------------------------------------------')
-    for event_slice in proph_generator(testfile_prophesee):
-        h5writer_proph.add_data(
-                event_slice['x'],
-                event_slice['y'],
-                event_slice['p'],
-                event_slice['t'])
-        print(f"t_s = {event_slice['t'][0]}, t_e = {event_slice['t'][-1]}")
