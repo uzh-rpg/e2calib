@@ -39,6 +39,7 @@ def ev_generator(bagpath: Path, delta_t_ms: int=1000, topic: str='/dvs/events') 
     ev_acc = EventAccumulator()
 
     init = False
+    last_time = 0
     with rosbag.Bag(str(bagpath), 'r') as bag:
         for topic, msg, ros_time in bag.read_messages(topics=[topic]):
             if not init:
@@ -47,6 +48,8 @@ def ev_generator(bagpath: Path, delta_t_ms: int=1000, topic: str='/dvs/events') 
                 t_ev_acc_end_ns = t_start_ns + delta_t_ns
             for event in msg.events:
                 time = event.ts.to_nsec()
+                assert time >= last_time, 'event timestamps must be equal or greater than the previous one'
+                last_time = time
                 if time < t_ev_acc_end_ns:
                     ev_acc.add_event(event)
                 else:

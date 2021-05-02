@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import numpy as np
+
 from metavision_core.event_io import EventsIterator
 
 from data.format import Events
@@ -10,6 +12,7 @@ def ev_generator(rawfile: Path, delta_t_ms: int=1000) -> Events:
 
     delta_t_us = delta_t_ms * 1000
     for ev in EventsIterator(str(rawfile), delta_t=delta_t_us):
+        assert np.all(ev['t'][:-1] <= ev['t'][1:]), 'event timestamps must be equal or greater than the previous one'
         events = Events(
                 ev['x'].astype('uint16'),
                 ev['y'].astype('uint16'),
