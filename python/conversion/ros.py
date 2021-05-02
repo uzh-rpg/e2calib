@@ -18,7 +18,8 @@ class EventAccumulator:
         self.x.append(event.x)
         self.y.append(event.y)
         self.p.append(int(event.polarity))
-        self.t.append(event.ts.to_nsec())
+        # floor to microseconds.
+        self.t.append(event.ts.to_nsec()//1000)
 
     def get_events(self) -> Events:
         events = Events(

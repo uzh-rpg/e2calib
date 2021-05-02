@@ -47,6 +47,7 @@ class EventsForReconstruction:
 
 
 if __name__ == '__main__':
+    # Example usage.
     events = EventsForReconstruction(
             Events(
                 x=np.array([0, 1], dtype='uint16'),
