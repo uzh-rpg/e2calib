@@ -11,8 +11,8 @@ if __name__ == '__main__':
     h5writer_proph = conversion.h5writer.H5Writer(Path('proph.h5'))
     h5writer_ros = conversion.h5writer.H5Writer(Path('ros.h5'))
 
-    testfile_prophesee = Path('/home/mathias/Downloads/data.raw')
-    testfile_ros = Path('/home/mathias/Downloads/indoor_45_16_davis.bag')
+    testfile_prophesee = Path('/home/mathias/Documents/projects/cvprw21/opensource/data/conversion_test/proph.raw')
+    testfile_ros = Path('/home/mathias/Documents/projects/cvprw21/opensource/data/conversion_test/ros.bag')
 
     for event_slice in ros_generator(testfile_ros):
         h5writer_ros.add_data(

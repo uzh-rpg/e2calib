@@ -15,9 +15,3 @@ def ev_generator(rawfile: Path, delta_t_ms: int=1000):
             't': ev['t'].astype('int64'),
         }
         yield out
-
-if __name__ == '__main__':
-    testfile = Path('/home/mathias/Downloads/data.raw')
-
-    for event_slice in ev_generator(testfile):
-        print(event_slice['t'])

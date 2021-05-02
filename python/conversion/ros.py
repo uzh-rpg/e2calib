@@ -32,8 +32,7 @@ def ev_generator(bagpath: Path, delta_t_ms: int=1000, topic: str='/dvs/events'):
     assert bagpath.exists()
     assert bagpath.suffix == '.bag'
 
-    delta_t_us = delta_t_ms * 1000
-    delta_t_ns = delta_t_us * 1000
+    delta_t_ns = delta_t_ms * 10**6
 
     t_ev_package_end_ns = None
     ev_package = EventPackage()
@@ -55,9 +54,3 @@ def ev_generator(bagpath: Path, delta_t_ms: int=1000, topic: str='/dvs/events'):
                     t_ev_package_end_ns = t_ev_package_end_ns + delta_t_ns
                     ev_package = EventPackage()
                     ev_package.add_event(event)
-
-if __name__ == '__main__':
-    testfile = Path('/home/mathias/Downloads/indoor_45_16_davis.bag')
-
-    for event_slice in ev_generator(testfile, topic='/dvs/events'):
-        print(f"t_s = {event_slice['t'][0]}, t_e = {event_slice['t'][-1]}")
