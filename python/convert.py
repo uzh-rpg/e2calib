@@ -27,9 +27,5 @@ if __name__ == '__main__':
     event_generator = conversion.format.get_generator(input_file, delta_t_ms=1000, topic=rostopic)
     h5writer = conversion.h5writer.H5Writer(output_file)
 
-    for event_slice in event_generator():
-        h5writer.add_data(
-                event_slice['x'],
-                event_slice['y'],
-                event_slice['p'],
-                event_slice['t'])
+    for events in event_generator():
+        h5writer.add_data(events)
