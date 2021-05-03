@@ -22,11 +22,11 @@ class Events:
         assert self.x.shape == self.y.shape == self.p.shape == self.t.shape
         assert self.x.ndim == 1
 
-        assert np.max(self.p) <= 1
-
         # Without the frozen option, we could just do: self.size = self.x.size
         super().__setattr__('size', self.x.size)
 
+        if self.size > 0:
+            assert np.max(self.p) <= 1
 
 @dataclass(frozen=True)
 class EventsForReconstruction:
@@ -38,12 +38,13 @@ class EventsForReconstruction:
     t_reconstruction: int
 
     def __post_init__(self):
-        assert np.max(self.events.t) <= self.t_reconstruction
-
         assert self.height > 0
-        assert np.max(self.events.y) < self.height
         assert self.width > 0
-        assert np.max(self.events.x) < self.width
+
+        if self.events.size > 0:
+            assert np.max(self.events.t) <= self.t_reconstruction
+            assert np.max(self.events.y) < self.height
+            assert np.max(self.events.x) < self.width
 
 
 if __name__ == '__main__':
