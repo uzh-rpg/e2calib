@@ -23,7 +23,6 @@ if __name__ == "__main__":
     parser.add_argument('-c', '--path_to_model', type=str,
                         help='path to the model weights',
                         default=os.path.join(os.environ['PRETRAINED_MODELS'], 'E2VID_lightweight.pth.tar'))
-    parser.add_argument('-o', '--outpur_folder', type=str, default='e2calib')
     parser.add_argument('--height', type=int, default=480)
     parser.add_argument('--width', type=int, default=640)
     print_every_n = 50
@@ -37,6 +36,7 @@ if __name__ == "__main__":
     model = model.to(device)
     model.eval()
 
+    print(args.output_folder)
     if not os.path.exists(args.output_folder):
         os.makedirs(args.output_folder)
     else:
