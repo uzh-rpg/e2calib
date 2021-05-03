@@ -5,7 +5,7 @@ Any further use for commercial purposes is subject to a written agreement.
 '''
 def set_inference_options(parser):
 
-    parser.add_argument('-o', '--output_folder', default=None, type=str)  # if None, will not write the images to disk
+    parser.add_argument('-o', '--output_folder', default='data', type=str)  # if None, will not write the images to disk
     parser.add_argument('--dataset_name', default='reconstruction', type=str)
 
     parser.add_argument('--use_gpu', dest='use_gpu', action='store_true')

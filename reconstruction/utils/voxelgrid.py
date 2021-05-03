@@ -76,7 +76,6 @@ class VoxelGrid:
         return voxel_grid, last_stamp
 
 
-
 if __name__ == '__main__':
     events = Events(
             x=np.array([0, 1, 5, 3, 4 ,7], dtype='uint16'),
