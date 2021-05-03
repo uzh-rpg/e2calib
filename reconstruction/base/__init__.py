@@ -4,4 +4,3 @@ in accordance with the terms and conditions of the research collaboration agreem
 Any further use for commercial purposes is subject to a written agreement.
 '''
 from .base_model import *
-from .base_trainer import *
