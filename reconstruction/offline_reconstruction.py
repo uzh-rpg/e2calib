@@ -54,7 +54,6 @@ if __name__ == "__main__":
             width=640,
             height=480,
             t_reconstruction=101)
-    # print(events.p)
     grid_repr = VoxelGrid(5, events.width, events.height, upsample_rate=2)
     sliced_events = grid_repr.event_slicer(events)
     for i in range(len(sliced_events)):

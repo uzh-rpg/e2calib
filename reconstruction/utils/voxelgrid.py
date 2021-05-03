@@ -92,9 +92,3 @@ if __name__ == '__main__':
     voxel_grid = []
     for i in range(len(sliced_events)):
         voxel_grid.append(grid_repr.events_to_voxel_grid(sliced_events[i]))
-        print()
-    # sliced_events = event_slicer(events, 2)
-    # for i in range(len(sliced_events)):
-    #     v_grid = events_to_voxel_grid(sliced_events[i], 5, events.width, events.height)
-    #     print()
-    # print(events)
