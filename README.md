@@ -1,7 +1,6 @@
 # E2Calib: How to Calibrate Your Event Camera
 
-This repository contains code that implements video reconstruction from event data for calibration as described in Muglikar et al. CVPRW'21.
-The paper can be found [here](http://rpg.ifi.uzh.ch/docs/CVPRW21_Muglikar.pdf)
+This repository contains code that implements video reconstruction from event data for calibration as described in the paper [Muglikar et al. CVPRW'21](http://rpg.ifi.uzh.ch/docs/CVPRW21_Muglikar.pdf).
 
 If you use this code in an academic context, please cite the following work:
 
