@@ -28,9 +28,9 @@ if __name__ == "__main__":
     parser.add_argument('-c', '--path_to_model', type=str,
                         help='path to the model weights',
                         default=os.path.join(os.environ['PRETRAINED_MODELS'], 'E2VID_lightweight.pth.tar'))
-    parser.add_argument('--height', type=int, default=260)
-    parser.add_argument('--width', type=int, default=346)
-    parser.add_argument('--freq_hz', '-fhz', type=int, default=1, help='Frequency for reconstructing frames from events')
+    parser.add_argument('--height', type=int, default=480)
+    parser.add_argument('--width', type=int, default=640)
+    parser.add_argument('--freq_hz', '-fhz', type=int, default=30, help='Frequency for reconstructing frames from events')
     print_every_n = 50
 
     set_inference_options(parser)
@@ -78,5 +78,3 @@ if __name__ == "__main__":
             print(event_tensor.shape, ts)
             image_reconstructor.update_reconstruction(event_tensor, idx, stamp=ts)
             idx+=1
-            if idx>100:
-                exit()
