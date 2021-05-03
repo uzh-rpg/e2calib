@@ -1,7 +1,6 @@
 import sys
 import numpy as np
 from utils.data import Events
-# from voxelgrid import VoxelGrid
 
 class VoxelGrid:
     def __init__(self, num_bins: int=5, width: int=640, height: int=480, upsample_rate: int=1):
