@@ -42,8 +42,20 @@ conda create -y -n e2calib python=3.7
 conda activate e2calib
 conda install -y -c anaconda numpy
 conda install -y -c conda-forge h5py
+conda install pytorch torchvision cudatoolkit=$cuda_version -c pytorch
+conda install pandas
+conda install -c conda-forge opencv
 ```
-TODO(Manasi): fill in the requirements for the reconstruction code
+
+The reconstruction code uses events saved in the h5 file format to images using the paper [**High Speed and High Dynamic Range Video with an Event Camera**](http://rpg.ifi.uzh.ch/docs/TPAMI19_Rebecq.pdf)
+
+* Download the pretrained model:
+```wget "http://rpg.ifi.uzh.ch/data/E2VID/models/E2VID_lightweight.pth.tar" -O pretrained/E2VID_lightweight.pth.tar```
+
+
+
+TODO(Manasi): Move the pretrained model from env variable to path.
+
 
 ## Calibration Procedure
 
@@ -57,3 +69,6 @@ The calibration procedure is based on three steps:
 The [conversion script](https://github.com/uzh-rpg/e2calib_private/blob/main/python/convert.py) simply requires the path to the event file and optionally a ros topic in case of a rosbag.
 
 ## Reconstruction
+
+The [reconstruction]() requires the h5 file to convert events to frames.
+Additionally, you also need to specify the height and width of the event camera and the frequency at which you want to reconstruct the frames.
