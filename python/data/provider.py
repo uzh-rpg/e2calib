@@ -100,6 +100,7 @@ class SharedBufferProducer:
     def get_t_end_us(self):
         return self.t_end_us
 
+
 class SharedBufferConsumer:
     def __init__(self, h5file: Path):
         # Shared buffer (akin to producer-consumer pattern)
@@ -190,8 +191,13 @@ class DataProvider:
         self.t_start_window_us = self.shared_buffer_consumer.get_t_start_us()
         self.t_end_us = self.shared_buffer_consumer.get_t_end_us()
 
+        self._length = (self.t_end_us - self.t_start_window_us)//self.delta_t_us
+
     def __iter__(self):
         return self
+
+    def __len__(self):
+        return self._length
 
     def __next__(self) -> EventsForReconstruction:
         t_end_window_us = self.t_start_window_us + self.delta_t_us
