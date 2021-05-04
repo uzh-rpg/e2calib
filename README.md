@@ -56,7 +56,10 @@ conda install -c anaconda scipy
 The reconstruction code uses events saved in the h5 file format to images using the paper [**High Speed and High Dynamic Range Video with an Event Camera**](http://rpg.ifi.uzh.ch/docs/TPAMI19_Rebecq.pdf)
 
 * Download the pretrained model:
-```wget "http://rpg.ifi.uzh.ch/data/E2VID/models/E2VID_lightweight.pth.tar" -O pretrained/E2VID_lightweight.pth.tar```
+```
+mkdir reconstruction/pretrained
+wget "http://rpg.ifi.uzh.ch/data/E2VID/models/E2VID_lightweight.pth.tar" -O pretrained/E2VID_lightweight.pth.tar
+```
 
 * Download the test data:
 ToDo: link the test file
