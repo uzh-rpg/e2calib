@@ -70,5 +70,5 @@ The [conversion script](https://github.com/uzh-rpg/e2calib_private/blob/main/pyt
 
 ## Reconstruction
 
-The [reconstruction]() requires the h5 file to convert events to frames.
+The [reconstruction](https://github.com/uzh-rpg/e2calib_private/blob/wip/manasi/reconstruction/offline_reconstruction.py) requires the h5 file to convert events to frames.
 Additionally, you also need to specify the height and width of the event camera and the frequency at which you want to reconstruct the frames.
