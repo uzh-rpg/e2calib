@@ -3,8 +3,6 @@ from pathlib import Path
 import numpy as np
 import rosbag
 
-from dvs_msgs.msg import EventArray, Event
-
 from data.format import Events
 
 class EventAccumulator:
@@ -14,14 +12,14 @@ class EventAccumulator:
         self.p = list()
         self.t = list()
 
-    def add_event(self, event: Event):
+    def add_event(self, event):
         self.x.append(event.x)
         self.y.append(event.y)
         self.p.append(int(event.polarity))
         # floor to microseconds.
         self.t.append(event.ts.to_nsec()//1000)
 
-    def get_events(self) -> Events:
+    def get_events(self):
         events = Events(
                 np.asarray(self.x, dtype='uint16'),
                 np.asarray(self.y, dtype='uint16'),
@@ -30,7 +28,7 @@ class EventAccumulator:
         return events
 
 
-def ev_generator(bagpath: Path, delta_t_ms: int=1000, topic: str='/dvs/events') -> Events:
+def ev_generator(bagpath: Path, delta_t_ms: int=1000, topic: str='/dvs/events'):
     assert bagpath.exists()
     assert bagpath.suffix == '.bag'
 
