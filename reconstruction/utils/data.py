@@ -1,7 +1,4 @@
 import sys
-version = sys.version_info
-# assert version[0] >= 3
-# assert version[1] >= 7, 'required for dataclasses'
 from dataclasses import dataclass
 
 import numpy as np
