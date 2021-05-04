@@ -53,7 +53,6 @@ if __name__ == "__main__":
     else:
         assert os.path.isdir(args.output_folder)
     
-    args.show_events = True
     image_reconstructor = ImageReconstructor(model, args.height, args.width, model.num_bins, args)
     idx =0 
     for events in data_provider:
