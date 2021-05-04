@@ -2,6 +2,7 @@ import os
 import json
 import time
 import torch
+import urllib
 import shutil
 import argparse
 import numpy as np
@@ -29,7 +30,6 @@ if __name__ == "__main__":
     parser.add_argument('--width', type=int, default=640)
     parser.add_argument('--freq_hz', '-fhz', type=int, default=30, help='Frequency for reconstructing frames from events')
     parser.add_argument('--upsample_freq', '-ufhz', type=int, default=2, help='Frequency for upsampling the frequence of recontruction')
-    print_every_n = 50
 
     set_inference_options(parser)
 
@@ -42,6 +42,13 @@ if __name__ == "__main__":
 
 
     # Load model to device
+    print('Downloading E2VID checkpoint to {} ...'.format(args.path_to_model))
+    if not os.path.isfile(args.path_to_model):
+        e2vid_model = urllib.request.urlopen('http://rpg.ifi.uzh.ch/data/E2VID/models/E2VID_lightweight.pth.tar')
+        with open(args.path_to_model, 'w+b') as f:
+            f.write(e2vid_model.read())
+        print('Done with downloading!')
+    assert os.path.isfile(args.path_to_model)
     model = load_model(args.path_to_model)
     device = get_device(args.use_gpu)
     model = model.to(device)
