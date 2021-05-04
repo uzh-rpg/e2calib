@@ -45,6 +45,9 @@ conda install -y -c conda-forge h5py
 conda install pytorch torchvision cudatoolkit=$cuda_version -c pytorch
 conda install pandas
 conda install -c conda-forge opencv
+conda install -c conda-forge matplotlib
+conda install -c anaconda scipy
+
 ```
 
 The reconstruction code uses events saved in the h5 file format to images using the paper [**High Speed and High Dynamic Range Video with an Event Camera**](http://rpg.ifi.uzh.ch/docs/TPAMI19_Rebecq.pdf)

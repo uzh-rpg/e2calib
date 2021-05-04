@@ -27,10 +27,11 @@ if __name__ == "__main__":
     parser.add_argument('--h5file', help='Path to h5 file containing events for reconstruction.', default='/home/manasi/Downloads/data.h5')
     parser.add_argument('-c', '--path_to_model', type=str,
                         help='path to the model weights',
-                        default=os.path.join(os.environ['PRETRAINED_MODELS'], 'E2VID_lightweight.pth.tar'))
+                        default='pretrained/E2VID_lightweight.pth.tar')
     parser.add_argument('--height', type=int, default=480)
     parser.add_argument('--width', type=int, default=640)
     parser.add_argument('--freq_hz', '-fhz', type=int, default=30, help='Frequency for reconstructing frames from events')
+    parser.add_argument('--upsample_freq', '-ufhz', type=int, default=2, help='Frequency for upsampling the frequence of recontruction')
     print_every_n = 50
 
     set_inference_options(parser)
@@ -70,7 +71,7 @@ if __name__ == "__main__":
             #         width=640,
             #         height=480,
             #         t_reconstruction=101)
-            grid_repr = VoxelGrid(model.num_bins, events.width, events.height, upsample_rate=5)
+            grid_repr = VoxelGrid(model.num_bins, events.width, events.height, upsample_rate=args.upsample_freq)
             sliced_events = grid_repr.event_slicer(events.events)
             for i in range(len(sliced_events)):
                 grid, ts = grid_repr.events_to_voxel_grid(sliced_events[i])
