@@ -1,8 +1,3 @@
-'''
-This code is provided for internal research and development purposes by Huawei solely,
-in accordance with the terms and conditions of the research collaboration agreement of May 7, 2020.
-Any further use for commercial purposes is subject to a written agreement.
-'''
 def set_inference_options(parser):
 
     parser.add_argument('-o', '--output_folder', default='frames', type=str)  # if None, will not write the images to disk
