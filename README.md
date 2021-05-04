@@ -36,9 +36,11 @@ pip3 install dataclasses # if your system Python version is < 3.7
 ```
 
 ### Reconstruction
-For running the reconstruction code, we create a new conda environment.
+For running the reconstruction code, we create a new conda environment. Use an appropriate cuda version.
 
 ```bash
+cuda_version=10.1
+
 conda create -y -n e2calib python=3.7
 conda activate e2calib
 conda install -y -c anaconda numpy
