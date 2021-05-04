@@ -56,10 +56,6 @@ The reconstruction code uses events saved in the h5 file format to images using 
 ```wget "http://rpg.ifi.uzh.ch/data/E2VID/models/E2VID_lightweight.pth.tar" -O pretrained/E2VID_lightweight.pth.tar```
 
 
-
-TODO(Manasi): Move the pretrained model from env variable to path.
-
-
 ## Calibration Procedure
 
 The calibration procedure is based on three steps:
