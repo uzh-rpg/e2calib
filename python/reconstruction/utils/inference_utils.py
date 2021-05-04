@@ -134,10 +134,10 @@ class ImageWriter:
             event_preview = make_event_preview(events, mode=self.event_display_mode,
                                                num_bins_to_show=self.num_bins_to_show)
             cv2.imwrite(join(self.event_previews_folder,
-                             'events_{:010d}.png'.format(event_tensor_id)), event_preview)
+                             'events_{:019d}.png'.format(event_tensor_id)), event_preview)
 
         cv2.imwrite(join(self.output_folder, self.dataset_name,
-                         '{:010d}.png'.format(event_tensor_id)), img)
+                         '{:019d}.png'.format(event_tensor_id)), img)
         # if stamp is not None:
         #     self.timestamps_file.write('{:.18f}\n'.format(stamp))
 

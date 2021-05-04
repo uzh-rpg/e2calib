@@ -70,7 +70,7 @@ if __name__ == "__main__":
                 event_tensor= torch.from_numpy(grid)
                 if i==len(sliced_events)-1:
                     assert ts <= events.t_reconstruction
-                    image_reconstructor.update_reconstruction(event_tensor, int(events.t_reconstruction), save=True, stamp=ts)
+                    image_reconstructor.update_reconstruction(event_tensor, int(events.t_reconstruction)*1000, save=True, stamp=ts)
                     pbar.update(1)
                 else:
-                    image_reconstructor.update_reconstruction(event_tensor, int(ts), save=False, stamp=ts)
+                    image_reconstructor.update_reconstruction(event_tensor, int(ts)*1000, save=False, stamp=ts)
