@@ -6,7 +6,6 @@ import shutil
 import argparse
 import numpy as np
 from pathlib import Path
-from matplotlib import pyplot as plt
 from os.path import join, basename
 from data.format import Events
 from data.provider import DataProvider
