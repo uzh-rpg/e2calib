@@ -55,6 +55,9 @@ The reconstruction code uses events saved in the h5 file format to images using 
 * Download the pretrained model:
 ```wget "http://rpg.ifi.uzh.ch/data/E2VID/models/E2VID_lightweight.pth.tar" -O pretrained/E2VID_lightweight.pth.tar```
 
+* Download the test data:
+ToDo: link the test file
+
 
 ## Calibration Procedure
 
@@ -71,3 +74,8 @@ The [conversion script](https://github.com/uzh-rpg/e2calib_private/blob/main/pyt
 
 The [reconstruction](https://github.com/uzh-rpg/e2calib_private/blob/wip/manasi/reconstruction/offline_reconstruction.py) requires the h5 file to convert events to frames.
 Additionally, you also need to specify the height and width of the event camera and the frequency at which you want to reconstruct the frames.
+To run the image reconstruction code on the test data use the following command:
+```
+python offline_reconstruction.py  --freq_hz 5
+```
+The images will be written by default in the ```data/reconstruction``` folder.
