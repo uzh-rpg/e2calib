@@ -57,8 +57,8 @@ The reconstruction code uses events saved in the h5 file format to images using 
 
 * Download the pretrained model:
 ```
-mkdir -p reconstruction/pretrained
-wget "http://rpg.ifi.uzh.ch/data/E2VID/models/E2VID_lightweight.pth.tar" -O reconstruction/pretrained/E2VID_lightweight.pth.tar
+mkdir -p python/reconstruction/pretrained
+wget "http://rpg.ifi.uzh.ch/data/E2VID/models/E2VID_lightweight.pth.tar" -O python/reconstruction/pretrained/E2VID_lightweight.pth.tar
 ```
 
 * Download the test data:
