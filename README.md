@@ -17,13 +17,15 @@ If you use this code in an academic context, please cite the following work:
 ```
 
 ## Installation
+The installation procedure is divided into two parts.
+First, installation of packages for the conversion code that must be completed outside of any virtual environment for compatibility reasons.
+Second, installation of packages in a conda environment to run the reconstruction code.
 
 ### Conversion to H5
 Our current conversion code supports 2 event file formats:
 1. Rosbags with [dvs\_msgs](https://github.com/uzh-rpg/rpg_dvs_ros/tree/master/dvs_msgs)
 2. Prophesee Raw Format: Metavision 2.2
 
-This requires the use of system Python.
 First,
 * install [dvs\_msgs](https://github.com/uzh-rpg/rpg_dvs_ros/tree/master/dvs_msgs), if you want to use rosbags.
 * install [Metavision 2.2](https://docs.prophesee.ai/2.2.0/installation/index.html), if you want to use prophesee raw files.
@@ -34,10 +36,9 @@ pip3 install dataclasses # if your system Python version is < 3.7
 ```
 
 ### Reconstruction
+For running the reconstruction code, we create a new conda environment.
 
 ```bash
-cuda_version=10.1
-
 conda create -y -n e2calib python=3.7
 conda activate e2calib
 conda install -y -c anaconda numpy
@@ -49,7 +50,7 @@ TODO(Manasi): fill in the requirements for the reconstruction code
 
 The calibration procedure is based on three steps:
 1. Conversion of different event data files into a common hdf5 format.
-2. Reconstruction of images at a certain frequency from this file.
+2. Reconstruction of images at a certain frequency from this file. Requires the activation of the conda environment `e2calib`.
 3. Calibration using your favorite image-based calibration toolbox.
 
 ## Conversion to H5
