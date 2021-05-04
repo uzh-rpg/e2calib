@@ -73,7 +73,7 @@ Additionally, you also need to specify the height and width of the event camera 
 To run the image reconstruction code on the test data use the following command:
 ```
   cd python
-  python offline_reconstruction.py  --freq_hz 5 --height 480 --width 640 --path_to_model reconstruction/pretrained/E2VID_lightweight.pth.tar
+  python offline_reconstruction.py  --h5file file --freq_hz 5 --height 480 --width 640 
 ```
 
 The images will be written by default in the ```frames/reconstruction``` folder.

@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
         description='Image reconstruction')
-    parser.add_argument('--h5file', help='Path to h5 file containing events for reconstruction.', default='/home/manasi/Downloads/data.h5')
+    parser.add_argument('--h5file', help='Path to h5 file containing events for reconstruction.', default='')
     parser.add_argument('-c', '--path_to_model', type=str,
                         help='path to the model weights',
                         default='reconstruction/pretrained/E2VID_lightweight.pth.tar')
@@ -36,6 +36,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Data loader
+    if not os.path.isfile(args.h5file):
+        print('h5 file not provided')
+        exit()
     h5_path = Path(args.h5file)
     freq_hz = args.freq_hz
     data_provider = DataProvider(h5_path, height=args.height, width=args.width, reconstruction_frequency_hz=args.freq_hz)
