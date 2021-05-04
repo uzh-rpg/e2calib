@@ -17,7 +17,6 @@ from collections import deque
 import atexit
 import scipy.stats as st
 import torch.nn.functional as F
-from math import sqrt
 
 
 def make_event_preview(events, mode='red-blue', num_bins_to_show=-1):
@@ -114,17 +113,20 @@ class ImageWriter:
         self.save_events = options.show_events
         self.event_display_mode = options.event_display_mode
         self.num_bins_to_show = options.num_bins_to_show
-        # print('== Image Writer ==')
+        if options.verbose:
+            print('== Image Writer ==')
         if self.output_folder:
             ensure_dir(self.output_folder)
             ensure_dir(join(self.output_folder, self.dataset_name))
-            # print('Will write images to: {}'.format(join(self.output_folder, self.dataset_name)))
+            if options.verbose:
+                print('Will write images to: {}'.format(join(self.output_folder, self.dataset_name)))
             # self.timestamps_file = open(join(self.output_folder, self.dataset_name, 'timestamps.txt'), 'a')
 
             if self.save_events:
                 self.event_previews_folder = join(self.output_folder, self.dataset_name, 'events')
                 ensure_dir(self.event_previews_folder)
-                # print('Will write event previews to: {}'.format(self.event_previews_folder))
+                if options.verbose:
+                    print('Will write event previews to: {}'.format(self.event_previews_folder))
 
             atexit.register(self.__cleanup__)
         else:
@@ -145,8 +147,7 @@ class ImageWriter:
         #     self.timestamps_file.write('{:.18f}\n'.format(stamp))
 
     def __cleanup__(self):
-        if self.output_folder:
-            self.timestamps_file.close()
+        return 0
 
 
 class UnsharpMaskFilter:

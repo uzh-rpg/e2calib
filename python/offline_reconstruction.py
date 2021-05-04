@@ -1,16 +1,9 @@
 import os
-import json
-import time
 import torch
 import urllib
-import shutil
 import argparse
-import numpy as np
 from pathlib import Path
-from os.path import join, basename
-from data.format import Events
 from data.provider import DataProvider
-from reconstruction.utils.timers import cuda_timers
 from reconstruction.utils.loading_utils import load_model, get_device
 from reconstruction.image_reconstructor import ImageReconstructor
 from reconstruction.options.inference_options import set_inference_options
@@ -43,7 +36,6 @@ if __name__ == "__main__":
     h5_path = Path(args.h5file)
     freq_hz = args.freq_hz
     data_provider = DataProvider(h5_path, height=args.height, width=args.width, reconstruction_frequency_hz=args.freq_hz)
-    print("len of data provider: ", len(data_provider))
 
     # Load model to device
     print('Downloading E2VID checkpoint to {} ...'.format(args.path_to_model))
@@ -66,7 +58,7 @@ if __name__ == "__main__":
     image_reconstructor = ImageReconstructor(model, args.height, args.width, model.num_bins, args)
     print('== Image reconstruction == ')
     print('Image size: {}x{}'.format(args.height, args.width))
-    print('Will write images to: {}'.format(join(args.output_folder, args.dataset_name)))
+    print('Will write images to: {}'.format(os.path.join(args.output_folder, args.dataset_name)))
 
     for events in data_provider:
         if events.events.size > 0:
