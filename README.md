@@ -43,13 +43,9 @@ cuda_version=10.1
 
 conda create -y -n e2calib python=3.7
 conda activate e2calib
-conda install -y -c anaconda numpy
-conda install -y -c conda-forge h5py
-conda install pytorch torchvision cudatoolkit=$cuda_version -c pytorch
-conda install pandas
-conda install -c conda-forge opencv
-conda install -c conda-forge matplotlib
-conda install -c anaconda scipy
+conda install -y -c anaconda numpy scipy
+conda install -y -c conda-forge h5py matplotlib opencv pandas
+conda install -y pytorch torchvision cudatoolkit=$cuda_version -c pytorch
 
 ```
 
