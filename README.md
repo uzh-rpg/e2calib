@@ -46,14 +46,15 @@ conda activate e2calib
 conda install -y -c anaconda numpy scipy
 conda install -y -c conda-forge h5py opencv
 conda install pytorch torchvision cudatoolkit=$cuda_version -c pytorch
+
 ```
 
 The reconstruction code uses events saved in the h5 file format to images using the paper [**High Speed and High Dynamic Range Video with an Event Camera**](http://rpg.ifi.uzh.ch/docs/TPAMI19_Rebecq.pdf)
 
 * Download the pretrained model:
 ```
-mkdir -p reconstruction/pretrained
-wget "http://rpg.ifi.uzh.ch/data/E2VID/models/E2VID_lightweight.pth.tar" -O pretrained/E2VID_lightweight.pth.tar
+mkdir -p python/reconstruction/pretrained
+wget "http://rpg.ifi.uzh.ch/data/E2VID/models/E2VID_lightweight.pth.tar" -O python/reconstruction/pretrained/E2VID_lightweight.pth.tar
 ```
 
 * Download the test data:
@@ -80,4 +81,8 @@ To run the image reconstruction code on the test data use the following command:
 cd python
 python offline_reconstruction.py  --freq_hz 5
 ```
+<<<<<<< HEAD
 The images will be written by default in the ```frames/reconstruction``` folder.
+=======
+The images will be written by default in the ```data/reconstruction``` folder.
+>>>>>>> 97e7c9fa95367b717835dfa807a119566f43970a
