@@ -49,7 +49,7 @@ conda install pytorch torchvision cudatoolkit=$cuda_version -c pytorch
 
 ```
 
-The reconstruction code uses events saved in the h5 file format to images using the paper [**High Speed and High Dynamic Range Video with an Event Camera**](http://rpg.ifi.uzh.ch/docs/TPAMI19_Rebecq.pdf)
+The reconstruction code uses events saved in the h5 file format to reconstruct images using the paper [**High Speed and High Dynamic Range Video with an Event Camera**](http://rpg.ifi.uzh.ch/docs/TPAMI19_Rebecq.pdf)
 
 * Download the test data:
 ToDo: link the test file
