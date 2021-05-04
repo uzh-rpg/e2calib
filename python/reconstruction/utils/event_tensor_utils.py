@@ -16,13 +16,15 @@ class EventPreprocessor:
     """
 
     def __init__(self, options):
-
-        print('== Event preprocessing ==')
+        
+        if options.verbose:
+            print('== Event preprocessing ==')
         self.no_normalize = options.no_normalize
-        if self.no_normalize:
-            print('!!Will not normalize event tensors!!')
-        else:
-            print('Will normalize event tensors.')
+        if options.verbose:
+            if self.no_normalize:
+                print('!!Will not normalize event tensors!!')
+            else:
+                print('Will normalize event tensors.')
 
         self.hot_pixel_locations = []
         self.hot_pixel_mask = None

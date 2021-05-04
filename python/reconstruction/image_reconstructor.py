@@ -32,8 +32,9 @@ class ImageReconstructor:
         self.initialize(self.height, self.width, self.options)
 
     def initialize(self, height, width, options):
-        print('== Image reconstruction == ')
-        print('Image size: {}x{}'.format(self.height, self.width))
+        if self.options.verbose:
+            print('== Image reconstruction == ')
+            print('Image size: {}x{}'.format(self.height, self.width))
 
         self.last_stamp = None
 
@@ -64,7 +65,7 @@ class ImageReconstructor:
         self.image_writer = ImageWriter(options)
         self.image_display = ImageDisplay(options)
 
-    def update_reconstruction(self, event_tensor, event_tensor_id, stamp=None):
+    def update_reconstruction(self, event_tensor, event_tensor_id, save=True, stamp=None):
 
         # max duration without events before we reinitialize
         self.max_duration_before_reinit_s = 5.0
@@ -72,7 +73,8 @@ class ImageReconstructor:
         # we reinitialize if stamp < last_stamp, or if stamp > last_stamp + max_duration_before_reinit_s
         if stamp is not None and self.last_stamp is not None:
             if stamp < self.last_stamp or stamp > self.last_stamp + self.max_duration_before_reinit_s:
-                print('Reinitialization detected!')
+                if self.options.verbose:
+                    print('Reinitialization detected!')
                 self.initialize(self.height, self.width, self.options)
 
         self.last_stamp = stamp
@@ -130,6 +132,6 @@ class ImageReconstructor:
 
             # Post-processing, e.g bilateral filter (on CPU)
             out = self.image_filter(out)
-
-            self.image_writer(out, event_tensor_id, stamp, events=events)
+            if save:
+                self.image_writer(out, event_tensor_id, stamp, events=events)
             self.image_display(out, events)

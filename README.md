@@ -76,5 +76,5 @@ To run the image reconstruction code on the test data use the following command:
   python offline_reconstruction.py  --h5file file --freq_hz 5 --height 480 --width 640 
 ```
 
-The images will be written by default in the ```python/frames/reconstruction``` folder.
+The images will be written by default in the ```python/frames/e2calib``` folder.
 

@@ -12,10 +12,10 @@ class VoxelGrid:
         self.height = height
         self.upsample_rate = upsample_rate
 
-    def event_slicer(self, events: Events):
+    def event_slicer(self, events: Events, t_reconstruction: int):
         sliced_events = []
         t_start = events.t[0]
-        t_end = events.t[-1]
+        t_end = t_reconstruction
         window_time = (t_end - t_start + 1)/self.upsample_rate
         indices = [0]
         for i in range(1, self.upsample_rate):
