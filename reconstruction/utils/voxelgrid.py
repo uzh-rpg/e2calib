@@ -13,7 +13,6 @@ class VoxelGrid:
         self.upsample_rate = upsample_rate
 
     def event_slicer(self, events: Events):
-        assert len(events.t)%self.upsample_rate == 0
         sliced_events = []
         t_start = events.t[0]
         t_end = events.t[-1]
