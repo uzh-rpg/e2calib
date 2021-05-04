@@ -27,11 +27,11 @@ Our current conversion code supports 2 event file formats:
 2. Prophesee Raw Format: Metavision 2.2
 
 First,
-* install [dvs\_msgs](https://github.com/uzh-rpg/rpg_dvs_ros/tree/master/dvs_msgs), if you want to use rosbags.
 * install [Metavision 2.2](https://docs.prophesee.ai/2.2.0/installation/index.html), if you want to use prophesee raw files.
 Second,
 ```bash
 pip3 install --no-cache-dir -r requirements.txt
+pip3 install --extra-index-url https://rospypi.github.io/simple/ rospy rosbag
 pip3 install dataclasses # if your system Python version is < 3.7
 ```
 
