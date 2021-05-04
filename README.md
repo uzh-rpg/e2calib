@@ -81,8 +81,5 @@ To run the image reconstruction code on the test data use the following command:
 cd python
 python offline_reconstruction.py  --freq_hz 5
 ```
-<<<<<<< HEAD
 The images will be written by default in the ```frames/reconstruction``` folder.
-=======
-The images will be written by default in the ```data/reconstruction``` folder.
->>>>>>> 97e7c9fa95367b717835dfa807a119566f43970a
+
