@@ -133,7 +133,6 @@ class ImageWriter:
     def __call__(self, img, event_tensor_id, stamp=None, events=None):
         if not self.output_folder:
             return
-        print(event_tensor_id, stamp)
         if self.save_events and events is not None:
             event_preview = make_event_preview(events, mode=self.event_display_mode,
                                                num_bins_to_show=self.num_bins_to_show)

@@ -47,7 +47,6 @@ if __name__ == "__main__":
     model = model.to(device)
     model.eval()
 
-    print(args.output_folder)
     if not os.path.exists(args.output_folder):
         os.makedirs(args.output_folder)
     else:
@@ -57,21 +56,10 @@ if __name__ == "__main__":
     idx =0 
     for events in data_provider:
         if events.events.size > 0:
-            # reconstruction_events = events.events
-            # N = 131
-            # events = Events(
-            #         x=np.array(np.random.randint(0, 640, (N,)), dtype='uint16'),
-            #         y=np.array(np.random.randint(0, 480, (N,)), dtype='uint16'),
-            #         p=np.array(np.random.randint(0, 2, (N,)), dtype='uint8'),
-            #         t=np.array(np.linspace(0, 101, num= N), dtype='int64'),
-            #         width=640,
-            #         height=480,
-            #         t_reconstruction=101)
             grid_repr = VoxelGrid(model.num_bins, events.width, events.height, upsample_rate=args.upsample_freq)
             sliced_events = grid_repr.event_slicer(events.events)
             for i in range(len(sliced_events)):
                 grid, ts = grid_repr.events_to_voxel_grid(sliced_events[i])
                 event_tensor= torch.from_numpy(grid)
-                # print(event_tensor.shape, ts)
                 image_reconstructor.update_reconstruction(event_tensor, idx, stamp=ts)
                 idx+=1
