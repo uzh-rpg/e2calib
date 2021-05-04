@@ -43,21 +43,17 @@ cuda_version=10.1
 
 conda create -y -n e2calib python=3.7
 conda activate e2calib
-conda install -y -c anaconda numpy
-conda install -y -c conda-forge h5py
+conda install -y -c anaconda numpy scipy
+conda install -y -c conda-forge h5py opencv matplotlib
 conda install pytorch torchvision cudatoolkit=$cuda_version -c pytorch
 conda install pandas
-conda install -c conda-forge opencv
-conda install -c conda-forge matplotlib
-conda install -c anaconda scipy
-
 ```
 
 The reconstruction code uses events saved in the h5 file format to images using the paper [**High Speed and High Dynamic Range Video with an Event Camera**](http://rpg.ifi.uzh.ch/docs/TPAMI19_Rebecq.pdf)
 
 * Download the pretrained model:
 ```
-mkdir reconstruction/pretrained
+mkdir -p reconstruction/pretrained
 wget "http://rpg.ifi.uzh.ch/data/E2VID/models/E2VID_lightweight.pth.tar" -O pretrained/E2VID_lightweight.pth.tar
 ```
 
