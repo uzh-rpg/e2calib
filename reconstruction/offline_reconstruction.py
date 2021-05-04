@@ -70,11 +70,11 @@ if __name__ == "__main__":
             #         width=640,
             #         height=480,
             #         t_reconstruction=101)
-            grid_repr = VoxelGrid(5, events.width, events.height, upsample_rate=1)
+            grid_repr = VoxelGrid(model.num_bins, events.width, events.height, upsample_rate=5)
             sliced_events = grid_repr.event_slicer(events.events)
-            # for i in range(len(sliced_events)):
-            grid, ts = grid_repr.events_to_voxel_grid(sliced_events[0])
-            event_tensor= torch.from_numpy(grid)
-            print(event_tensor.shape, ts)
-            image_reconstructor.update_reconstruction(event_tensor, idx, stamp=ts)
-            idx+=1
+            for i in range(len(sliced_events)):
+                grid, ts = grid_repr.events_to_voxel_grid(sliced_events[i])
+                event_tensor= torch.from_numpy(grid)
+                # print(event_tensor.shape, ts)
+                image_reconstructor.update_reconstruction(event_tensor, idx, stamp=ts)
+                idx+=1
