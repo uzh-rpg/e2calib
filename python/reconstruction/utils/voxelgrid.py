@@ -13,25 +13,28 @@ class VoxelGrid:
         self.upsample_rate = upsample_rate
 
     def event_slicer(self, events: Events, t_reconstruction: int):
+        assert np.max(events.t) <=t_reconstruction
         sliced_events = []
         t_start = events.t[0]
         t_end = t_reconstruction
         window_time = (t_end - t_start + 1)/self.upsample_rate
         indices = [0]
         for i in range(1, self.upsample_rate):
-            indices.append( np.where(events.t > i*window_time+t_start)[0][0])
-        indices.append(len(events.t)) # Add the last time timestamp
+            indices.append(np.where(events.t > i*window_time+t_start)[0][0])
+        indices.append(len(events.t)-1) # Add the last time timestamp
         
         # The format here is used in e2vid voxel grid
         for i in range(0, self.upsample_rate):
+            ts = events.t[indices[i]:indices[i+1]]-t_start
             sliced_events.append(np.stack((
-                np.asarray(events.t[indices[i]:indices[i+1]], dtype="float32"),
+                np.asarray(ts, dtype="float32"),
                 np.asarray(events.x[indices[i]:indices[i+1]], dtype="float32"),
                 np.asarray(events.y[indices[i]:indices[i+1]], dtype="float32"),
                 np.asarray(events.p[indices[i]:indices[i+1]], dtype="float32"))).T)
+
         return sliced_events
 
-    def events_to_voxel_grid(self, events):
+    def events_to_voxel_grid(self, events, t_reconstruction):
         """
         Build a voxel grid with bilinear interpolation in the time domain from a set of events.
         :param events: a [N x 4] NumPy array containing one event per row in the form: [timestamp, x, y, polarity]
@@ -47,6 +50,8 @@ class VoxelGrid:
         last_stamp = events[-1, 0]
         first_stamp = events[0, 0]
         deltaT = last_stamp - first_stamp
+
+        assert(last_stamp<=t_reconstruction)
 
         if deltaT == 0:
             deltaT = 1.0
@@ -73,6 +78,16 @@ class VoxelGrid:
 
         voxel_grid = np.reshape(voxel_grid, (self.num_bins, self.height, self.width))
         return voxel_grid, last_stamp
+
+    def normalize_voxel(self, voxel_grid, normalize=True):
+        if normalize:
+            mask = np.nonzero(voxel_grid)
+            if mask[0].size > 0:
+                mean, stddev = voxel_grid[mask].mean(), voxel_grid[mask].std()
+                if stddev > 0:
+                    voxel_grid[mask] = (voxel_grid[mask] - mean) / stddev
+        return voxel_grid
+
 
 
 if __name__ == '__main__':
