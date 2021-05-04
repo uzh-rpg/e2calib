@@ -1,4 +1,5 @@
 import os
+import tqdm
 import torch
 import urllib
 import argparse
@@ -59,16 +60,17 @@ if __name__ == "__main__":
     print('== Image reconstruction == ')
     print('Image size: {}x{}'.format(args.height, args.width))
     print('Will write images to: {}'.format(os.path.join(args.output_folder, args.dataset_name)))
-
+    pbar = tqdm.tqdm(total=len(data_provider))
     for events in data_provider:
         if events.events.size > 0:
             grid_repr = VoxelGrid(model.num_bins, events.width, events.height, upsample_rate=args.upsample_freq)
             sliced_events = grid_repr.event_slicer(events.events, events.t_reconstruction)
             for i in range(len(sliced_events)):
-                grid, ts = grid_repr.events_to_voxel_grid(sliced_events[i])
+                grid, ts = grid_repr.events_to_voxel_grid(sliced_events[i], events.t_reconstruction)
                 event_tensor= torch.from_numpy(grid)
                 if i==len(sliced_events)-1:
                     assert ts <= events.t_reconstruction
                     image_reconstructor.update_reconstruction(event_tensor, int(events.t_reconstruction), save=True, stamp=ts)
+                    pbar.update(1)
                 else:
                     image_reconstructor.update_reconstruction(event_tensor, int(ts), save=False, stamp=ts)
