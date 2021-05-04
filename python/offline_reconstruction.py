@@ -1,15 +1,8 @@
 import os
-import json
-import time
 import torch
-import shutil
 import argparse
-import numpy as np
 from pathlib import Path
-from os.path import join, basename
-from data.format import Events
 from data.provider import DataProvider
-from reconstruction.utils.timers import cuda_timers
 from reconstruction.utils.loading_utils import load_model, get_device
 from reconstruction.image_reconstructor import ImageReconstructor
 from reconstruction.options.inference_options import set_inference_options
@@ -39,7 +32,6 @@ if __name__ == "__main__":
     h5_path = Path(args.h5file)
     freq_hz = args.freq_hz
     data_provider = DataProvider(h5_path, height=args.height, width=args.width, reconstruction_frequency_hz=args.freq_hz)
-
 
     # Load model to device
     model = load_model(args.path_to_model)

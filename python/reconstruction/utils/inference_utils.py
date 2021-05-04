@@ -17,7 +17,6 @@ from collections import deque
 import atexit
 import scipy.stats as st
 import torch.nn.functional as F
-from math import sqrt
 
 
 def make_event_preview(events, mode='red-blue', num_bins_to_show=-1):
