@@ -40,7 +40,7 @@ def get_reconstruction_timestamps(time: np.ndarray, pol: np.ndarray, use_avg_ts:
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser('Read trigger data from prophesee raw file (Metavision 2.2)')
+    parser = argparse.ArgumentParser('Read trigger data from prophesee raw file')
     parser.add_argument('rawfile')
     parser.add_argument('output_file', help='Path to output text file with timestamps for reconstruction.')
     parser.add_argument('--use_average_timestamp', '-avgt', action='store_true',
