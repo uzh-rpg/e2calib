@@ -22,33 +22,44 @@ class VoxelGrid:
         for i in range(1, self.upsample_rate):
             indices.append(np.where(events.t > i*window_time+t_start)[0][0])
         indices.append(len(events.t)-1) # Add the last time timestamp
-        
-        # The format here is used in e2vid voxel grid
+
+        max_event_time_in_event_slice = []
         for i in range(0, self.upsample_rate):
-            ts = events.t[indices[i]:indices[i+1]]-t_start
-            sliced_events.append(np.stack((
+            ts = events.t[indices[i]:indices[i+1]]-events.t[indices[i]]
+            sliced_events.append( Events(events.x[indices[i]:indices[i+1]],
+                                        events.y[indices[i]:indices[i+1]],
+                                        events.p[indices[i]:indices[i+1]], 
+                                        ts))
+            max_event_time_in_event_slice.append(np.max(ts))
+        # Reconstruction id of the event slice which is closest to the reconstruction timestamp
+        recon_id =np.argmin(abs(np.max(sliced_events[max_event_time_in_event_slice])- t_reconstruction)) 
+        return sliced_events, recon_id
+
+    def convert_to_event_array(self, events: Events, t_reconstruction: int):
+        t_start = events.t[0]
+        ts = events.t-t_start
+        event_array = np.stack((
                 np.asarray(ts, dtype="float32"),
-                np.asarray(events.x[indices[i]:indices[i+1]], dtype="float32"),
-                np.asarray(events.y[indices[i]:indices[i+1]], dtype="float32"),
-                np.asarray(events.p[indices[i]:indices[i+1]], dtype="float32"))).T)
+                np.asarray(events.x, dtype="float32"),
+                np.asarray(events.y, dtype="float32"),
+                np.asarray(events.p, dtype="float32"))).T
+        return event_array
 
-        return sliced_events
-
-    def events_to_voxel_grid(self, events, t_reconstruction):
+    def events_to_voxel_grid(self, events: Events, t_reconstruction: int):
         """
         Build a voxel grid with bilinear interpolation in the time domain from a set of events.
         :param events: a [N x 4] NumPy array containing one event per row in the form: [timestamp, x, y, polarity]
         :param num_bins: number of bins in the temporal axis of the voxel grid
         :param width, height: dimensions of the voxel grid
         """
-
-        assert(events.shape[1] == 4)
+        event_array = self.convert_to_event_array(events, t_reconstruction)
+        assert(event_array.shape[1] == 4)
 
         voxel_grid = np.zeros((self.num_bins, self.height, self.width), np.float32).ravel()
 
         # normalize the event timestamps so that they lie between 0 and num_bins
-        last_stamp = events[-1, 0]
-        first_stamp = events[0, 0]
+        last_stamp = event_array[-1, 0]
+        first_stamp = event_array[0, 0]
         deltaT = last_stamp - first_stamp
 
         assert(last_stamp<=t_reconstruction)
@@ -56,11 +67,11 @@ class VoxelGrid:
         if deltaT == 0:
             deltaT = 1.0
 
-        events[:, 0] = (self.num_bins - 1) * (events[:, 0] - first_stamp) / deltaT
-        ts = events[:, 0]
-        xs = events[:, 1].astype(np.int)
-        ys = events[:, 2].astype(np.int)
-        pols = events[:, 3]
+        event_array[:, 0] = (self.num_bins - 1) * (event_array[:, 0] - first_stamp) / deltaT
+        ts = event_array[:, 0]
+        xs = event_array[:, 1].astype(np.int)
+        ys = event_array[:, 2].astype(np.int)
+        pols = event_array[:, 3]
         pols[pols == 0] = -1  # polarity should be +1 / -1
 
         tis = ts.astype(np.int)
@@ -77,7 +88,7 @@ class VoxelGrid:
                 (tis[valid_indices] + 1) * self.width * self.height, vals_right[valid_indices])
 
         voxel_grid = np.reshape(voxel_grid, (self.num_bins, self.height, self.width))
-        return voxel_grid, last_stamp
+        return voxel_grid
 
     def normalize_voxel(self, voxel_grid, normalize=True):
         if normalize:
