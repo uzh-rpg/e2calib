@@ -5,6 +5,7 @@ import urllib
 import argparse
 from pathlib import Path
 from data.provider import DataProvider
+from data.rectimestamps import TimestampProviderFile, TimestampProviderRate
 from reconstruction.utils.loading_utils import load_model, get_device
 from reconstruction.image_reconstructor import ImageReconstructor
 from reconstruction.options.inference_options import set_inference_options
@@ -30,7 +31,8 @@ if __name__ == "__main__":
                         default='reconstruction/pretrained/E2VID_lightweight.pth.tar')
     parser.add_argument('--height', type=int, default=480)
     parser.add_argument('--width', type=int, default=640)
-    parser.add_argument('--freq_hz', '-fhz', type=int, default=5, help='Frequency for reconstructing frames from events')
+    parser.add_argument('--freq_hz', '-fhz', type=int, default=0, help='Frequency for reconstructing frames from events')
+    parser.add_argument('--timestamps_file', '-tsf', help='Path to txt file containing image reconstruction timestamps')
     parser.add_argument('--upsample_rate', '-u', type=int, default=1, help=' Reconstruct images at intermediate interval, using the upsamping rate, between the frequency window. Intermediate frames are discarded.')
     parser.add_argument('--verbose', '-v',  action='store_true', default=False, help='Verbose output')
 
@@ -42,9 +44,17 @@ if __name__ == "__main__":
     if not os.path.isfile(args.h5file):
         print('h5 file not provided')
         exit()
+    
     h5_path = Path(args.h5file)
     freq_hz = args.freq_hz
-    data_provider = DataProvider(h5_path, height=args.height, width=args.width, reconstruction_frequency_hz=args.freq_hz)
+    timestamp_provider = None
+    if freq_hz > 0:
+        timestamp_provider = TimestampProviderRate(freq_hz)
+    else:
+        timestamps_file = Path(args.timestamps_file)
+        assert timestamps_file.exists()
+        timestamp_provider = TimestampProviderFile(timestamps_file)
+    data_provider = DataProvider(h5_path, height=args.height, width=args.width, timestamp_provider=timestamp_provider)
 
     # Load model to device
     if not os.path.isfile(args.path_to_model):

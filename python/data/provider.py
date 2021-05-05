@@ -7,6 +7,7 @@ import h5py
 import numpy as np
 
 from data.format import Events, EventsForReconstruction
+from data.rectimestamps import TimestampProviderBase
 
 
 class SharedEventBuffer:
@@ -177,37 +178,30 @@ class SharedBufferConsumer:
 
 
 class DataProvider:
-    def __init__(self, h5file: Path, height: int, width: int, reconstruction_frequency_hz: int=5):
+    def __init__(self, h5file: Path, height: int, width: int, timestamp_provider: TimestampProviderBase):
         assert height > 0
         assert width > 0
-        assert reconstruction_frequency_hz > 0
 
         self.shared_buffer_consumer = SharedBufferConsumer(h5file)
 
         self.height = height
         self.width = width
 
-        self.delta_t_us = int(1/reconstruction_frequency_hz*10**6)
-        self.t_start_window_us = self.shared_buffer_consumer.get_t_start_us()
-        self.t_end_us = self.shared_buffer_consumer.get_t_end_us()
-
-        self._length = (self.t_end_us - self.t_start_window_us)//self.delta_t_us
+        self.timestamp_provider = timestamp_provider
+        self.timestamp_provider.initialize(
+                self.shared_buffer_consumer.get_t_start_us(),
+                self.shared_buffer_consumer.get_t_end_us())
 
     def __iter__(self):
         return self
 
     def __len__(self):
-        return self._length
+        return len(self.timestamp_provider)
 
     def __next__(self) -> EventsForReconstruction:
-        t_end_window_us = self.t_start_window_us + self.delta_t_us
-        if t_end_window_us > self.t_end_us:
-            raise StopIteration
+        t_reconstruction_us = next(self.timestamp_provider)
 
-        events = self.shared_buffer_consumer.get_events_until(t_end_window_us)
+        events = self.shared_buffer_consumer.get_events_until(t_reconstruction_us)
         if events is None:
             raise StopIteration
-        events_for_reconstruction = EventsForReconstruction(events, self.width, self.height, t_end_window_us)
-
-        self.t_start_window_us = t_end_window_us
-        return events_for_reconstruction
+        return EventsForReconstruction(events, self.width, self.height, t_reconstruction_us)
