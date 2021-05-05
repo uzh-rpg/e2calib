@@ -3,7 +3,6 @@ import tqdm
 import torch
 import urllib
 import argparse
-import numpy as np
 from pathlib import Path
 from data.provider import DataProvider
 from reconstruction.utils.loading_utils import load_model, get_device
@@ -32,7 +31,7 @@ if __name__ == "__main__":
     parser.add_argument('--height', type=int, default=480)
     parser.add_argument('--width', type=int, default=640)
     parser.add_argument('--freq_hz', '-fhz', type=int, default=5, help='Frequency for reconstructing frames from events')
-    parser.add_argument('--upsample_rate', '-u', type=int, default=2, help=' Reconstruct images at intermediate interval, using the upsamping rate, between the frequency window. Intermediate frames are discarded.')
+    parser.add_argument('--upsample_rate', '-u', type=int, default=1, help=' Reconstruct images at intermediate interval, using the upsamping rate, between the frequency window. Intermediate frames are discarded.')
     parser.add_argument('--verbose', '-v',  action='store_true', default=False, help='Verbose output')
 
     set_inference_options(parser)
@@ -65,16 +64,16 @@ if __name__ == "__main__":
     print('== Image reconstruction == ')
     print('Image size: {}x{}'.format(args.height, args.width))
     print('Will write images to: {}'.format(os.path.join(args.output_folder, args.dataset_name)))
+    grid = VoxelGrid(model.num_bins, args.width, args.height, upsample_rate=args.upsample_rate)
     pbar = tqdm.tqdm(total=len(data_provider))
     for events in data_provider:
         if events.events.size > 0:
-            grid_repr = VoxelGrid(model.num_bins, events.width, events.height, upsample_rate=args.upsample_multiplier)
-            sliced_events, recon_id = grid_repr.event_slicer(events.events, events.t_reconstruction)
+            sliced_events, recon_id = grid.event_slicer(events.events, events.t_reconstruction)
             for i in range(len(sliced_events)):
-                grid = grid_repr.events_to_voxel_grid(sliced_events[i], t_last[i])
-                event_tensor= torch.from_numpy(grid)
+                event_grid, t_last = grid.events_to_voxel_grid(sliced_events[i])
+                event_tensor = torch.from_numpy(event_grid)
                 if i==recon_id:
-                    image_reconstructor.update_reconstruction(event_tensor, int(events.t_reconstruction)*1000, save=True, stamp=t_last[i])
+                    image_reconstructor.update_reconstruction(event_tensor, int(events.t_reconstruction)*1000, save=True, stamp=t_last)
                     pbar.update(1)
                 else:
-                    image_reconstructor.update_reconstruction(event_tensor, int(ts)*1000, save=False, stamp=t_last[i])
+                    image_reconstructor.update_reconstruction(event_tensor, int(ts)*1000, save=False, stamp=t_last)

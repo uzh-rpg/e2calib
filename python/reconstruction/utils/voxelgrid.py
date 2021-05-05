@@ -32,10 +32,10 @@ class VoxelGrid:
                                         ts))
             max_event_time_in_event_slice.append(np.max(ts))
         # Reconstruction id of the event slice which is closest to the reconstruction timestamp
-        recon_id =np.argmin(abs(np.max(sliced_events[max_event_time_in_event_slice])- t_reconstruction)) 
+        recon_id =np.argmin(abs(max_event_time_in_event_slice- t_reconstruction)) 
         return sliced_events, recon_id
 
-    def convert_to_event_array(self, events: Events, t_reconstruction: int):
+    def convert_to_event_array(self, events: Events):
         t_start = events.t[0]
         ts = events.t-t_start
         event_array = np.stack((
@@ -45,14 +45,14 @@ class VoxelGrid:
                 np.asarray(events.p, dtype="float32"))).T
         return event_array
 
-    def events_to_voxel_grid(self, events: Events, t_reconstruction: int):
+    def events_to_voxel_grid(self, events: Events):
         """
         Build a voxel grid with bilinear interpolation in the time domain from a set of events.
         :param events: a [N x 4] NumPy array containing one event per row in the form: [timestamp, x, y, polarity]
         :param num_bins: number of bins in the temporal axis of the voxel grid
         :param width, height: dimensions of the voxel grid
         """
-        event_array = self.convert_to_event_array(events, t_reconstruction)
+        event_array = self.convert_to_event_array(events)
         assert(event_array.shape[1] == 4)
 
         voxel_grid = np.zeros((self.num_bins, self.height, self.width), np.float32).ravel()
@@ -61,8 +61,6 @@ class VoxelGrid:
         last_stamp = event_array[-1, 0]
         first_stamp = event_array[0, 0]
         deltaT = last_stamp - first_stamp
-
-        assert(last_stamp<=t_reconstruction)
 
         if deltaT == 0:
             deltaT = 1.0
@@ -88,7 +86,7 @@ class VoxelGrid:
                 (tis[valid_indices] + 1) * self.width * self.height, vals_right[valid_indices])
 
         voxel_grid = np.reshape(voxel_grid, (self.num_bins, self.height, self.width))
-        return voxel_grid
+        return voxel_grid, last_stamp
 
     def normalize_voxel(self, voxel_grid, normalize=True):
         if normalize:
