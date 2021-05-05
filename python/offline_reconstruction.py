@@ -76,4 +76,4 @@ if __name__ == "__main__":
                     image_reconstructor.update_reconstruction(event_tensor, int(events.t_reconstruction)*1000, save=True, stamp=t_last)
                     pbar.update(1)
                 else:
-                    image_reconstructor.update_reconstruction(event_tensor, int(ts)*1000, save=False, stamp=t_last)
+                    image_reconstructor.update_reconstruction(event_tensor, int(t_last)*1000, save=False, stamp=t_last)
