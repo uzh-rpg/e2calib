@@ -78,3 +78,10 @@ To run the image reconstruction code on the test data use the following command:
 
 The images will be written by default in the ```python/frames/e2calib``` folder.
 
+### Parameters
+Main parameters
+
+* ```--freq_hz``` (default 5) Frequency of reconstructed images. This is the parameter that has most influence on the image reconstruction quality.
+The default frequency is 5Hz. This value may need to be adapted depending on the scene dynamics to improve the quality of the reconstruction.
+* ```--upsample_rate``` (default 1) Reconstruct frames at intermediate times. This parameter reconstructs frames at intermediate times between frequency window.
+The intermediate frames are not saved. This parameter can be adjusted in a scenario where you cannot increase the reconstruction frequency (due to synchronization with an external sensor) but would like to improve the quality of reconstructions. 
