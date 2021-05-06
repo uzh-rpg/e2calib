@@ -110,8 +110,8 @@ For each file, we provide the original event file format (raw or rosbag) but als
 wget https://download.ifi.uzh.ch/rpg/e2calib/prophesee/without_triggers/data.raw
 wget https://download.ifi.uzh.ch/rpg/e2calib/prophesee/without_triggers/data.h5
 ```
-#### Reconstruction
-To reconstruct images from events at a fixed frequency, you can follow the following guidelines:
+*Reconstruction Example*
+To reconstruct images from events at a fixed frequency, you can follow this example command:
 ```bash
   conda activate e2calib
   cd python
@@ -127,8 +127,8 @@ wget https://download.ifi.uzh.ch/rpg/e2calib/prophesee/with_triggers/data.raw
 wget https://download.ifi.uzh.ch/rpg/e2calib/prophesee/with_triggers/data.h5
 wget https://download.ifi.uzh.ch/rpg/e2calib/prophesee/with_triggers/triggers.txt
 ```
-#### Reconstruction
-To reconstruct images from events at the trigger time, you can follow the following guidelines:
+*Reconstruction Example*
+To reconstruct images from events at the trigger time, you can follow this example command:
 ```bash
   conda activate e2calib
   cd python
@@ -141,8 +141,8 @@ To reconstruct images from events at the trigger time, you can follow the follow
 wget https://download.ifi.uzh.ch/rpg/e2calib/samsung/samsung.bag
 wget https://download.ifi.uzh.ch/rpg/e2calib/samsung/samsung.h5
 ```
-#### Reconstruction
-To reconstruct images from events at fixed frequency, you can follow the following guidelines:
+*Reconstruction Example*
+To reconstruct images from events at fixed frequency, you can follow this example command:
 ```bash
   conda activate e2calib
   cd python
