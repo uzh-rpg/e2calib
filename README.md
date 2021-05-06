@@ -80,7 +80,7 @@ The [conversion script](https://github.com/uzh-rpg/e2calib_private/blob/main/pyt
 The [reconstruction](https://github.com/uzh-rpg/e2calib_private/blob/wip/manasi/python/offline_reconstruction.py) requires the h5 file to convert events to frames.
 Additionally, you also need to specify the height and width of the event camera and the frequency or timestamps at which you want to reconstruct the frames.
 As an example, to run the image reconstruction code on one of the example files use the following command:
-```
+```bash
   cd python
   python offline_reconstruction.py  --h5file file --freq_hz 5 --upsample_rate 4 --height 480 --width 640 
 ```
@@ -110,6 +110,14 @@ For each file, we provide the original event file format (raw or rosbag) but als
 wget https://download.ifi.uzh.ch/rpg/e2calib/prophesee/without_triggers/data.raw
 wget https://download.ifi.uzh.ch/rpg/e2calib/prophesee/without_triggers/data.h5
 ```
+#### Reconstruction
+To reconstruct images from events at a fixed frequency, you can follow the following guidelines:
+```bash
+  conda activate e2calib
+  cd python
+  python offline_reconstruction.py  --freq_hz 10 --upsample_rate 2 --h5file data.h5 --output_folder gen3_no_trigger --height 480 --width 640
+```
+![Sample reconstruction](img/gen3_no_trigger_0000000001700066000.png?raw=true)
 
 **With Triggers:**
 
@@ -119,10 +127,24 @@ wget https://download.ifi.uzh.ch/rpg/e2calib/prophesee/with_triggers/data.raw
 wget https://download.ifi.uzh.ch/rpg/e2calib/prophesee/with_triggers/data.h5
 wget https://download.ifi.uzh.ch/rpg/e2calib/prophesee/with_triggers/triggers.txt
 ```
+#### Reconstruction
+To reconstruct images from events at the trigger time, you can follow the following guidelines:
+```bash
+  conda activate e2calib
+  cd python
+  python offline_reconstruction.py  --upsample_rate 2 --h5file data.h5 --output_folder gen3_with_trigger/ --timestamps_file triggers.txt --height 480 --width 640
+```
 
 ### Samsung Gen 3
 **Without Triggers:**
 ```bash
 wget https://download.ifi.uzh.ch/rpg/e2calib/samsung/samsung.bag
 wget https://download.ifi.uzh.ch/rpg/e2calib/samsung/samsung.h5
+```
+#### Reconstruction
+To reconstruct images from events at fixed frequency, you can follow the following guidelines:
+```bash
+  conda activate e2calib
+  cd python
+  python offline_reconstruction.py --freq_hz 5 --upsample_rate 4 --h5file samsung.h5 --output_folder samsung_gen3 --height 480 --width 640
 ```
