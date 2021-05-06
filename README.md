@@ -30,7 +30,7 @@ First, install [Metavision 2.2](https://docs.prophesee.ai/2.2.0/installation/ind
 Second,
 ```bash
 pip3 install --no-cache-dir -r requirements.txt
-pip3 install --extra-index-url https://rospypi.github.io/simple/ rospy rosbag sensor-msgs
+pip3 install --extra-index-url https://rospypi.github.io/simple/ rospy rosbag
 pip3 install dataclasses # if your system Python version is < 3.7
 ```
 
