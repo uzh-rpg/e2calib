@@ -55,10 +55,6 @@ conda install pytorch torchvision cudatoolkit=$cuda_version -c pytorch
 
 The reconstruction code uses events saved in the h5 file format to reconstruct images with [E2VID](http://rpg.ifi.uzh.ch/docs/TPAMI19_Rebecq.pdf).
 
-* Download the test data:
-ToDo: link the test file
-
-
 ### Reconstructions to Rosbag
 If you want to use [kalibr](https://github.com/ethz-asl/kalibr), you may want to create a rosbag from the reconstructed images.
 To achieve this, additionally install (outside of the conda environment)
