@@ -1,17 +1,18 @@
-import os
-import tqdm
-import torch
-import urllib
 import argparse
+import os
+os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
 from pathlib import Path
+import urllib
+
+import torch
+import tqdm
+
 from data.provider import DataProvider
 from data.rectimestamps import TimestampProviderFile, TimestampProviderRate
 from reconstruction.utils.loading_utils import load_model, get_device
 from reconstruction.image_reconstructor import ImageReconstructor
 from reconstruction.options.inference_options import set_inference_options
 from reconstruction.utils.voxelgrid import VoxelGrid
-os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
-
 
 
 def download_checkpoint(path_to_model):
@@ -20,6 +21,7 @@ def download_checkpoint(path_to_model):
     with open(path_to_model, 'w+b') as f:
         f.write(e2vid_model.read())
     print('Done with downloading!')
+
 
 if __name__ == "__main__":
 
@@ -44,7 +46,7 @@ if __name__ == "__main__":
     if not os.path.isfile(args.h5file):
         print('h5 file not provided')
         exit()
-    
+
     h5_path = Path(args.h5file)
     freq_hz = args.freq_hz
     timestamp_provider = None
@@ -69,7 +71,7 @@ if __name__ == "__main__":
         os.makedirs(args.output_folder)
     else:
         assert os.path.isdir(args.output_folder)
-    
+
     image_reconstructor = ImageReconstructor(model, args.height, args.width, model.num_bins, args)
     print('== Image reconstruction == ')
     print('Image size: {}x{}'.format(args.height, args.width))

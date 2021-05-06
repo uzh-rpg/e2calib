@@ -26,12 +26,11 @@ Our current conversion code supports 2 event file formats:
 1. Rosbags with [dvs\_msgs](https://github.com/uzh-rpg/rpg_dvs_ros/tree/master/dvs_msgs)
 2. Prophesee Raw Format: Metavision 2.2
 
-First,
-* install [Metavision 2.2](https://docs.prophesee.ai/2.2.0/installation/index.html), if you want to use prophesee raw files.
+First, install [Metavision 2.2](https://docs.prophesee.ai/2.2.0/installation/index.html), if you want to use prophesee raw files.
 Second,
 ```bash
 pip3 install --no-cache-dir -r requirements.txt
-pip3 install --extra-index-url https://rospypi.github.io/simple/ rospy rosbag
+pip3 install --extra-index-url https://rospypi.github.io/simple/ rospy rosbag sensor-msgs
 pip3 install dataclasses # if your system Python version is < 3.7
 ```
 
@@ -54,6 +53,15 @@ The reconstruction code uses events saved in the h5 file format to reconstruct i
 * Download the test data:
 ToDo: link the test file
 
+
+### Reconstructions to Rosbag
+If you want to use [kalibr](https://github.com/ethz-asl/kalibr), you may want to create a rosbag from the reconstructed images.
+To achieve this, additionally install (outside of the conda environment)
+
+```bash
+pip3 install tqdm opencv-python
+pip3 install --extra-index-url https://rospypi.github.io/simple/ sensor-msgs
+```
 
 ## Calibration Procedure
 

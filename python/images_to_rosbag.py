@@ -1,16 +1,16 @@
-import rosbag
-import cv2
-# from cv_bridge import CvBridge
-from os.path import join
-import rospy
 import argparse
-import os
 import glob
-import tqdm
+import os
+from os.path import join
+
+import cv2
+import rosbag
+import rospy
 from sensor_msgs.msg import Image
+import tqdm
+
 
 if __name__ == "__main__":
-
     parser = argparse.ArgumentParser()
     parser.add_argument("--rosbag_folder", required=True,
                         type=str, help="Path to the base folder containing the rosbags")
@@ -25,7 +25,6 @@ if __name__ == "__main__":
     print('Images to process: {}'.format(args.image_folder))
     reconstructed_images_folder = args.image_folder
 
-    
     if not os.path.exists(args.rosbag_folder):
         os.makedirs(args.rosbag_folder)
 
