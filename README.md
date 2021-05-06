@@ -24,14 +24,19 @@ Second, installation of packages in a conda environment to run the reconstructio
 ### Conversion to H5
 Our current conversion code supports 2 event file formats:
 1. Rosbags with [dvs\_msgs](https://github.com/uzh-rpg/rpg_dvs_ros/tree/master/dvs_msgs)
-2. Prophesee Raw Format: Metavision 2.2
+2. Prophesee raw format using [Metavision 2.2](https://docs.prophesee.ai/2.2.0/installation/index.html)
 
-First, install [Metavision 2.2](https://docs.prophesee.ai/2.2.0/installation/index.html), if you want to use prophesee raw files.
-Second,
+Regardeless of the event file format:
 ```bash
 pip3 install --no-cache-dir -r requirements.txt
-pip3 install --extra-index-url https://rospypi.github.io/simple/ rospy rosbag
 pip3 install dataclasses # if your system Python version is < 3.7
+```
+
+* If you want to convert Prophesee raw format, install [Metavision 2.2](https://docs.prophesee.ai/2.2.0/installation/index.html).
+* If you want to convert Rosbags, install:
+
+```bash
+pip3 install --extra-index-url https://rospypi.github.io/simple/ rospy rosbag
 ```
 
 ### Reconstruction
