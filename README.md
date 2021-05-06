@@ -55,12 +55,11 @@ conda install pytorch torchvision cudatoolkit=$cuda_version -c pytorch
 
 The reconstruction code uses events saved in the h5 file format to reconstruct images with [E2VID](http://rpg.ifi.uzh.ch/docs/TPAMI19_Rebecq.pdf).
 
-#### Reconstruction Options
-**Based on Fixed Frequency**
+#### Reconstruction Options: Fixed Frequency
 
 Reconstruction can be performed at a fixed frequency. This is useful for intrinsic calibration.
 
-**Based on Specified Timestamps**
+#### Reconstruction Options: Specified Timestamps
 
 You can also specify the timestamps for image reconstruction from a text file. As an example, these timestamps can be trigger signals that synchronize the event camera with the exposure time of a frame-based camera. In this scenario, you may want to reconstruct images from the event camera at the trigger timestamps for extrinsic calibration.
 
