@@ -101,6 +101,15 @@ We provide a script to [extract trigger signals from a prophesee raw file](pytho
 
 We provide the option to multiply the reconstruction rate by a factor via the `--upsample_rate` argument. For example, setting this value to 3 will lead to 3 times higher reconstruction rate but does not influence the final number of reconstructed images that will be saved. This parameter can be used to finetune the reconstruction performance. For example setting `--freq_hz` to 5 without upsampling can lead to suboptimal performance because too many events are fed to E2VID. Instead, it is often a good start to work with 20 Hz reconstruction, thus setting the upsampling rate to 4.
 
+
+### Calibration
+
+Once the reconstructed images are ready, you can use any image calibration toolbox.
+We provide a [script](python/images_to_rosbag.py) to convert the reconstructed images to rosbag, that can be used with [kalibr](https://github.com/ethz-asl/kalibr) calibration toolbox for intrinsic calibration.
+In case you would like to combine other sensors for extrinsics calibration, please take a look at the [kalibr bagcreator script](https://github.com/ethz-asl/kalibr/wiki/bag-format#bagcreater) 
+
+
+
 ## Example Files
 For each file, we provide the original event file format (raw or rosbag) but also the already converted h5 file.
 
