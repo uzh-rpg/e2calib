@@ -111,6 +111,7 @@ wget https://download.ifi.uzh.ch/rpg/e2calib/prophesee/without_triggers/data.raw
 wget https://download.ifi.uzh.ch/rpg/e2calib/prophesee/without_triggers/data.h5
 ```
 *Reconstruction Example*
+
 To reconstruct images from events at a fixed frequency, you can follow this example command:
 ```bash
   conda activate e2calib
@@ -128,6 +129,7 @@ wget https://download.ifi.uzh.ch/rpg/e2calib/prophesee/with_triggers/data.h5
 wget https://download.ifi.uzh.ch/rpg/e2calib/prophesee/with_triggers/triggers.txt
 ```
 *Reconstruction Example*
+
 To reconstruct images from events at the trigger time, you can follow this example command:
 ```bash
   conda activate e2calib
@@ -142,6 +144,7 @@ wget https://download.ifi.uzh.ch/rpg/e2calib/samsung/samsung.bag
 wget https://download.ifi.uzh.ch/rpg/e2calib/samsung/samsung.h5
 ```
 *Reconstruction Example*
+
 To reconstruct images from events at fixed frequency, you can follow this example command:
 ```bash
   conda activate e2calib
