@@ -112,9 +112,11 @@ wget https://download.ifi.uzh.ch/rpg/e2calib/prophesee/without_triggers/data.h5
 ```
 
 **With Triggers:**
+We also extracted the trigger signals using the provided [script](python/extract_triggers_prophesee.py) and provide them in the `triggers.txt` file.
 ```bash
 wget https://download.ifi.uzh.ch/rpg/e2calib/prophesee/with_triggers/data.raw
 wget https://download.ifi.uzh.ch/rpg/e2calib/prophesee/with_triggers/data.h5
+wget https://download.ifi.uzh.ch/rpg/e2calib/prophesee/with_triggers/triggers.txt
 ```
 
 ### Samsung Gen 3
