@@ -12,7 +12,8 @@ class ImageReconstructor:
 
         self.model = model
         self.use_gpu = options.use_gpu
-        self.device = torch.device('cuda:0') if self.use_gpu else torch.device('cpu')
+        self.gpu_id = options.gpu_id
+        self.device = torch.device(self.gpu_id) if self.use_gpu else torch.device('cpu')
         self.height = height
         self.width = width
         self.num_bins = num_bins
