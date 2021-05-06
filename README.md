@@ -39,7 +39,7 @@ pip3 install dataclasses # if your system Python version is < 3.7
 pip3 install --extra-index-url https://rospypi.github.io/simple/ rospy rosbag
 ```
 
-### Reconstruction
+### Image Reconstruction
 For running the reconstruction code, we create a new conda environment. Use an appropriate cuda version.
 
 ```bash
@@ -54,6 +54,18 @@ conda install pytorch torchvision cudatoolkit=$cuda_version -c pytorch
 ```
 
 The reconstruction code uses events saved in the h5 file format to reconstruct images with [E2VID](http://rpg.ifi.uzh.ch/docs/TPAMI19_Rebecq.pdf).
+
+#### Reconstruction Options
+*Based on Fixed Frequency*
+
+Reconstruction can be performed at a fixed frequency. This is useful for intrinsic calibration.
+
+*Based on Specified Timestamps*
+
+You can also specify the timestamps for image reconstruction from a text file. As an example, these timestamps can be trigger signals that synchronize the event camera with the exposure time of a frame-based camera. In this scenario, you may want to reconstruct images from the event camera at the trigger timestamps for extrinsic calibration.
+
+We provide a script to [extract trigger signals from a prophesee raw file](python/extract_triggers_prophesee.py).
+
 
 ### Reconstructions to Rosbag
 If you want to use [kalibr](https://github.com/ethz-asl/kalibr), you may want to create a rosbag from the reconstructed images.
