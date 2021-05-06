@@ -111,7 +111,7 @@ cd python
 python3 images_to_rosbag.py --rosbag_folder samsung_gen3 --image_folder  samsung_gen3/e2calib --image_topic /dvs/image_reconstructed
 ```
 
-In case you would like to combine other sensors for extrinsics calibration, please take a look at the [kalibr bagcreator script](https://github.com/ethz-asl/kalibr/wiki/bag-format#bagcreater) 
+In case you would like to combine images with other sensors for extrinsics calibration, please take a look at the [kalibr bagcreator script](https://github.com/ethz-asl/kalibr/wiki/bag-format#bagcreater) 
 
 
 
