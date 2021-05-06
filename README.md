@@ -55,17 +55,6 @@ conda install pytorch torchvision cudatoolkit=$cuda_version -c pytorch
 
 The reconstruction code uses events saved in the h5 file format to reconstruct images with [E2VID](http://rpg.ifi.uzh.ch/docs/TPAMI19_Rebecq.pdf).
 
-#### Reconstruction Options: Fixed Frequency
-
-Reconstruction can be performed at a fixed frequency. This is useful for intrinsic calibration.
-
-#### Reconstruction Options: Specified Timestamps
-
-You can also specify the timestamps for image reconstruction from a text file. As an example, these timestamps can be trigger signals that synchronize the event camera with the exposure time of a frame-based camera. In this scenario, you may want to reconstruct images from the event camera at the trigger timestamps for extrinsic calibration.
-
-We provide a script to [extract trigger signals from a prophesee raw file](python/extract_triggers_prophesee.py).
-
-
 ### Reconstructions to Rosbag
 If you want to use [kalibr](https://github.com/ethz-asl/kalibr), you may want to create a rosbag from the reconstructed images.
 To achieve this, additionally install (outside of the conda environment)
@@ -89,22 +78,28 @@ The [conversion script](https://github.com/uzh-rpg/e2calib_private/blob/main/pyt
 ### Reconstruction
 
 The [reconstruction](https://github.com/uzh-rpg/e2calib_private/blob/wip/manasi/python/offline_reconstruction.py) requires the h5 file to convert events to frames.
-Additionally, you also need to specify the height and width of the event camera and the frequency at which you want to reconstruct the frames.
-To run the image reconstruction code on the test data use the following command:
+Additionally, you also need to specify the height and width of the event camera and the frequency or timestamps at which you want to reconstruct the frames.
+As an example, to run the image reconstruction code on one of the example files use the following command:
 ```
   cd python
-  python offline_reconstruction.py  --h5file file --freq_hz 5 --height 480 --width 640 
+  python offline_reconstruction.py  --h5file file --freq_hz 5 --upsample_rate 4 --height 480 --width 640 
 ```
 
 The images will be written by default in the ```python/frames/e2calib``` folder.
 
-#### Parameters
-Main parameters
+#### Fixed Frequency
 
-* ```--freq_hz``` (default 5) Frequency of reconstructed images. This is the parameter that has most influence on the image reconstruction quality.
-The default frequency is 5Hz. This value may need to be adapted depending on the scene dynamics to improve the quality of the reconstruction.
-* ```--upsample_rate``` (default 1) Reconstruct frames at intermediate times. This parameter reconstructs frames at intermediate times between frequency window.
-The intermediate frames are not saved. This parameter can be adjusted in a scenario where you cannot increase the reconstruction frequency (due to synchronization with an external sensor) but would like to improve the quality of reconstructions. 
+Reconstruction can be performed at a fixed frequency. This is useful for intrinsic calibration. The argument `--freq_hz` specifies the frequency at which the image reconstructions will be saved.
+
+#### Specified Timestamps
+
+You can also specify the timestamps for image reconstruction from a text file. As an example, these timestamps can be trigger signals that synchronize the event camera with the exposure time of a frame-based camera. In this scenario, you may want to reconstruct images from the event camera at the trigger timestamps for extrinsic calibration. The argument `--timestamps_file` must point to a text file containing the timestamps in microseconds for this option to take effect.
+
+We provide a script to [extract trigger signals from a prophesee raw file](python/extract_triggers_prophesee.py).
+
+#### Upsampling
+
+We provide the option to multiply the reconstruction rate by a factor via the `--upsample_rate` argument. For example, setting this value to 3 will lead to 3 times higher reconstruction rate but does not influence the final number of reconstructed images that will be saved. This parameter can be used to finetune the reconstruction performance. For example setting `--freq_hz` to 5 without upsampling can lead to suboptimal performance because too many events are fed to E2VID. Instead, it is often a good start to work with 20 Hz reconstruction, thus setting the upsampling rate to 4.
 
 ## Example Files
 For each file, we provide the original event file format (raw or rosbag) but also the already converted h5 file.

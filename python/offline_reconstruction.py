@@ -33,9 +33,9 @@ if __name__ == "__main__":
                         default='reconstruction/pretrained/E2VID_lightweight.pth.tar')
     parser.add_argument('--height', type=int, default=480)
     parser.add_argument('--width', type=int, default=640)
-    parser.add_argument('--freq_hz', '-fhz', type=int, default=0, help='Frequency for reconstructing frames from events')
+    parser.add_argument('--freq_hz', '-fhz', type=int, default=0, help='Frequency for saving the reconstructed images from events')
     parser.add_argument('--timestamps_file', '-tsf', help='Path to txt file containing image reconstruction timestamps')
-    parser.add_argument('--upsample_rate', '-u', type=int, default=1, help=' Reconstruct images at intermediate interval, using the upsamping rate, between the frequency window. Intermediate frames are discarded.')
+    parser.add_argument('--upsample_rate', '-u', type=int, default=1, help='Multiplies the number of reconstructions, which effectively lowers the time window of events for E2VID. These intermediate reconstructions will not be saved to disk.')
     parser.add_argument('--verbose', '-v',  action='store_true', default=False, help='Verbose output')
 
     set_inference_options(parser)
