@@ -56,11 +56,11 @@ conda install pytorch torchvision cudatoolkit=$cuda_version -c pytorch
 The reconstruction code uses events saved in the h5 file format to reconstruct images with [E2VID](http://rpg.ifi.uzh.ch/docs/TPAMI19_Rebecq.pdf).
 
 #### Reconstruction Options
-*Based on Fixed Frequency*
+**Based on Fixed Frequency**
 
 Reconstruction can be performed at a fixed frequency. This is useful for intrinsic calibration.
 
-*Based on Specified Timestamps*
+**Based on Specified Timestamps**
 
 You can also specify the timestamps for image reconstruction from a text file. As an example, these timestamps can be trigger signals that synchronize the event camera with the exposure time of a frame-based camera. In this scenario, you may want to reconstruct images from the event camera at the trigger timestamps for extrinsic calibration.
 
@@ -111,20 +111,20 @@ The intermediate frames are not saved. This parameter can be adjusted in a scena
 For each file, we provide the original event file format (raw or rosbag) but also the already converted h5 file.
 
 ### Prophesee Gen 3
-*Without Triggers:*
+**Without Triggers:**
 ```bash
 wget https://download.ifi.uzh.ch/rpg/e2calib/prophesee/without_triggers/data.raw
 wget https://download.ifi.uzh.ch/rpg/e2calib/prophesee/without_triggers/data.h5
 ```
 
-*With Triggers:*
+**With Triggers:**
 ```bash
 wget https://download.ifi.uzh.ch/rpg/e2calib/prophesee/with_triggers/data.raw
 wget https://download.ifi.uzh.ch/rpg/e2calib/prophesee/with_triggers/data.h5
 ```
 
 ### Samsung Gen 3
-*Without Triggers*
+**Without Triggers:**
 ```bash
 wget https://download.ifi.uzh.ch/rpg/e2calib/samsung/samsung.bag
 wget https://download.ifi.uzh.ch/rpg/e2calib/samsung/samsung.h5
