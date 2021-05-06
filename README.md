@@ -98,3 +98,26 @@ Main parameters
 The default frequency is 5Hz. This value may need to be adapted depending on the scene dynamics to improve the quality of the reconstruction.
 * ```--upsample_rate``` (default 1) Reconstruct frames at intermediate times. This parameter reconstructs frames at intermediate times between frequency window.
 The intermediate frames are not saved. This parameter can be adjusted in a scenario where you cannot increase the reconstruction frequency (due to synchronization with an external sensor) but would like to improve the quality of reconstructions. 
+
+## Example Files
+For each file, we provide the original event file format (raw or rosbag) but also the already converted h5 file.
+
+### Prophesee Gen 3
+*Without Triggers:*
+```bash
+wget https://download.ifi.uzh.ch/rpg/e2calib/prophesee/without_triggers/data.raw
+wget https://download.ifi.uzh.ch/rpg/e2calib/prophesee/without_triggers/data.h5
+```
+
+*With Triggers:*
+```bash
+wget https://download.ifi.uzh.ch/rpg/e2calib/prophesee/with_triggers/data.raw
+wget https://download.ifi.uzh.ch/rpg/e2calib/prophesee/with_triggers/data.h5
+```
+
+### Samsung Gen 3
+*Without Triggers*
+```bash
+wget https://download.ifi.uzh.ch/rpg/e2calib/samsung/samsung.bag
+wget https://download.ifi.uzh.ch/rpg/e2calib/samsung/samsung.h5
+```
