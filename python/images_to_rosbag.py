@@ -1,13 +1,13 @@
 import rosbag
 import cv2
-from cv_bridge import CvBridge
+# from cv_bridge import CvBridge
 from os.path import join
 import rospy
 import argparse
 import os
 import glob
 import tqdm
-
+from sensor_msgs.msg import Image
 
 if __name__ == "__main__":
 
@@ -25,7 +25,6 @@ if __name__ == "__main__":
     print('Images to process: {}'.format(args.image_folder))
     reconstructed_images_folder = args.image_folder
 
-    bridge = CvBridge()
     
     if not os.path.exists(args.rosbag_folder):
         os.makedirs(args.rosbag_folder)
@@ -48,11 +47,15 @@ if __name__ == "__main__":
             img = cv2.imread(image_path, 0)
 
             try:
-                img_msg = bridge.cv2_to_imgmsg(img, encoding='mono8')
                 stamp_ros = rospy.Time(secs=int(stamp[0:-9]), nsecs=int(stamp[-9:]) )
-                img_msg.header.stamp = stamp_ros
-                img_msg.header.seq = i
-                outbag.write(args.image_topic, img_msg, img_msg.header.stamp)
+                rosimage = Image()
+                rosimage.header.stamp = stamp_ros
+                rosimage.height = img.shape[0]
+                rosimage.width = img.shape[1]
+                rosimage.step = rosimage.width  #only with mono8! (step = width * byteperpixel * numChannels)
+                rosimage.encoding = "mono8"
+                rosimage.data = img.tostring()
+                outbag.write(args.image_topic, rosimage, stamp_ros)
                 pbar.update(1)
             except:
                 print("error in reading file ", image_path)
