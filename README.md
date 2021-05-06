@@ -108,7 +108,7 @@ Once the reconstructed images are ready, you can use any image calibration toolb
 We provide a [script](python/images_to_rosbag.py) to convert the reconstructed images to rosbag, that can be used with [kalibr](https://github.com/ethz-asl/kalibr) calibration toolbox for intrinsic calibration. Please use this script outside the conda environment.
 ```bash
 cd python
-python3 images_to_rosbag.py --rosbag_folder samsung_gen3 --image_folder  samsung_gen3/e2calib --image_topic /dvs/image_reconstructed
+python3 images_to_rosbag.py --rosbag_folder python/frames/ --image_folder  python/frames/e2calib --image_topic /dvs/image_reconstructed
 ```
 
 In case you would like to combine images with other sensors for extrinsics calibration, please take a look at the [kalibr bagcreator script](https://github.com/ethz-asl/kalibr/wiki/bag-format#bagcreater) 
