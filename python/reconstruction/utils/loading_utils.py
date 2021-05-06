@@ -21,9 +21,9 @@ def load_model(path_to_model):
     return model
 
 
-def get_device(use_gpu):
+def get_device(use_gpu, gpu_id):
     if use_gpu and torch.cuda.is_available():
-        device = torch.device('cuda:0')
+        device = torch.device(gpu_id)
     else:
         device = torch.device('cpu')
     print('Device:', device)
