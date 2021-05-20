@@ -30,9 +30,9 @@ class VoxelGrid:
                                         events.y[indices[i]:indices[i+1]],
                                         events.p[indices[i]:indices[i+1]], 
                                         ts))
-            max_event_time_in_event_slice.append(np.max(ts))
+            max_event_time_in_event_slice.append(np.max(events.t[indices[i]:indices[i+1]]))
         # Reconstruction id of the event slice which is closest to the reconstruction timestamp
-        recon_id =np.argmin(abs(max_event_time_in_event_slice- t_reconstruction)) 
+        recon_id =np.argmin(abs(max_event_time_in_event_slice- t_reconstruction))
         return sliced_events, recon_id
 
     def convert_to_event_array(self, events: Events):
