@@ -81,11 +81,11 @@ if __name__ == "__main__":
     pbar = tqdm.tqdm(total=len(data_provider))
     for events in data_provider:
         if events.events.size > 0:
-            sliced_events, recon_id = grid.event_slicer(events.events, events.t_reconstruction)
+            sliced_events = grid.event_slicer(events.events, events.t_reconstruction)
             for i in range(len(sliced_events)):
                 event_grid, t_last = grid.events_to_voxel_grid(sliced_events[i])
                 event_tensor = torch.from_numpy(event_grid)
-                if i==recon_id:
+                if i== args.upsample_rate-1:
                     image_reconstructor.update_reconstruction(event_tensor, int(events.t_reconstruction)*1000, save=True, stamp=t_last)
                     pbar.update(1)
                 else:

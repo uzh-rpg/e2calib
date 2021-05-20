@@ -127,7 +127,7 @@ class ImageWriter:
         else:
             print('Will not write images to disk.')
 
-    def __call__(self, img, event_tensor_id, stamp=None, events=None):
+    def __call__(self, img, event_tensor_id, events=None):
         if not self.output_folder:
             return
         if self.save_events and events is not None:
@@ -138,8 +138,7 @@ class ImageWriter:
 
         cv2.imwrite(join(self.output_folder, self.dataset_name,
                          '{:019d}.png'.format(event_tensor_id)), img)
-        # if stamp is not None:
-        #     self.timestamps_file.write('{:.18f}\n'.format(stamp))
+
 
     def __cleanup__(self):
         return 0
