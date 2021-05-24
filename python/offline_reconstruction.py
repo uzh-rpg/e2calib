@@ -83,10 +83,10 @@ if __name__ == "__main__":
         if events.events.size > 0:
             sliced_events = grid.event_slicer(events.events, events.t_reconstruction)
             for i in range(len(sliced_events)):
-                event_grid, t_last = grid.events_to_voxel_grid(sliced_events[i])
+                event_grid, _ = grid.events_to_voxel_grid(sliced_events[i])
                 event_tensor = torch.from_numpy(event_grid)
-                if i== args.upsample_rate-1:
-                    image_reconstructor.update_reconstruction(event_tensor, int(events.t_reconstruction)*1000, save=True, stamp=t_last)
+                if i== len(sliced_events) - 1:
+                    image_reconstructor.update_reconstruction(event_tensor, int(events.t_reconstruction)*1000, save=True)
                     pbar.update(1)
                 else:
-                    image_reconstructor.update_reconstruction(event_tensor, int(t_last)*1000, save=False, stamp=t_last)
+                    image_reconstructor.update_reconstruction(event_tensor)

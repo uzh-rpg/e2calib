@@ -55,7 +55,7 @@ class ImageReconstructor:
         self.image_writer = ImageWriter(options)
         self.image_display = ImageDisplay(options)
 
-    def update_reconstruction(self, event_tensor, event_tensor_id, save=True, stamp=None):
+    def update_reconstruction(self, event_tensor, event_tensor_id=None, save=False, stamp=None):
 
         # max duration without events before we reinitialize
         self.max_duration_before_reinit_s = 5.0
@@ -122,6 +122,6 @@ class ImageReconstructor:
 
             # Post-processing, e.g bilateral filter (on CPU)
             out = self.image_filter(out)
-            if save:
+            if save and event_tensor_id is not None:
                 self.image_writer(out, event_tensor_id, events=events)
             self.image_display(out, events)

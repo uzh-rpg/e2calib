@@ -33,8 +33,7 @@ class VoxelGrid:
         return sliced_events
 
     def convert_to_event_array(self, events: Events):
-        t_start = events.t[0]
-        ts = events.t-t_start
+        ts = events.t
         event_array = np.stack((
                 np.asarray(ts, dtype="float32"),
                 np.asarray(events.x, dtype="float32"),
