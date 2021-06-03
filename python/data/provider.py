@@ -137,7 +137,7 @@ class SharedBufferConsumer:
                         np.array([], dtype=np.uint16),
                         np.array([], dtype=np.uint16),
                         np.array([], dtype=np.uint8),
-                        np.array([], dtype=np.int64))
+                        np.array([], dtype=np.uint32))
             else:
                 retrieved_events = Events(
                         self.local_buffer.x[indices],
