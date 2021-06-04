@@ -23,7 +23,7 @@ class H5Writer:
         self.h5f.create_dataset('x', shape=shape, dtype=coord_dtype, chunks=shape, maxshape=maxshape, compression=compression)
         self.h5f.create_dataset('y', shape=shape, dtype=coord_dtype, chunks=shape, maxshape=maxshape, compression=compression)
         self.h5f.create_dataset('p', shape=shape, dtype='u1', chunks=shape, maxshape=maxshape, compression=compression)
-        self.h5f.create_dataset('t', shape=shape, dtype='u4', chunks=shape, maxshape=maxshape, compression=compression)
+        self.h5f.create_dataset('t', shape=shape, dtype='i8', chunks=shape, maxshape=maxshape, compression=compression)
         self.row_idx = 0
 
     @staticmethod
