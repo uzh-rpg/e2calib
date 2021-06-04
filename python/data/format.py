@@ -28,6 +28,31 @@ class Events:
         if self.size > 0:
             assert np.max(self.p) <= 1
 
+
+@dataclass(frozen=True)
+class EventsFloat:
+    x: np.ndarray
+    y: np.ndarray
+    p: np.ndarray
+    t: np.ndarray
+
+    size: int = field(init=False)
+
+    def __post_init__(self):
+        assert self.x.dtype == np.float32
+        assert self.y.dtype == np.float32
+        assert self.p.dtype == np.uint8
+        assert self.t.dtype == np.int64
+
+        assert self.x.shape == self.y.shape == self.p.shape == self.t.shape
+        assert self.x.ndim == 1
+
+        # Without the frozen option, we could just do: self.size = self.x.size
+        super().__setattr__('size', self.x.size)
+
+        if self.size > 0:
+            assert np.max(self.p) <= 1
+
 @dataclass(frozen=True)
 class EventsForReconstruction:
     events: Events

@@ -37,7 +37,8 @@ if __name__ == "__main__":
     parser.add_argument('--freq_hz', '-fhz', type=int, default=0, help='Frequency for saving the reconstructed images from events')
     parser.add_argument('--timestamps_file', '-tsf', help='Path to txt file containing image reconstruction timestamps')
     parser.add_argument('--upsample_rate', '-u', type=int, default=1, help='Multiplies the number of reconstructions, which effectively lowers the time window of events for E2VID. These intermediate reconstructions will not be saved to disk.')
-    parser.add_argument('--verbose', '-v',  action='store_true', default=False, help='Verbose output')
+    parser.add_argument('--verbose', '-v',  action='store_true', help='Verbose output')
+    parser.add_argument('--index_by_order', '-i',  action='store_true', help='Index reconstrutions with 0,1,2,3...')
 
     set_inference_options(parser)
 
@@ -79,14 +80,15 @@ if __name__ == "__main__":
     print('Will write images to: {}'.format(os.path.join(args.output_folder, args.dataset_name)))
     grid = VoxelGrid(model.num_bins, args.width, args.height, upsample_rate=args.upsample_rate)
     pbar = tqdm.tqdm(total=len(data_provider))
-    for events in data_provider:
+    for j, events in enumerate(data_provider):
         if events.events.size > 0:
             sliced_events = grid.event_slicer(events.events, events.t_reconstruction)
             for i in range(len(sliced_events)):
                 event_grid, _ = grid.events_to_voxel_grid(sliced_events[i])
                 event_tensor = torch.from_numpy(event_grid)
                 if i== len(sliced_events) - 1:
-                    image_reconstructor.update_reconstruction(event_tensor, int(events.t_reconstruction)*1000, save=True)
+                    index = j if args.index_by_order else int(events.t_reconstruction)*1000
+                    image_reconstructor.update_reconstruction(event_tensor, index, save=True)
                     pbar.update(1)
                 else:
                     image_reconstructor.update_reconstruction(event_tensor)
