@@ -3,6 +3,7 @@ import os
 os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
 from pathlib import Path
 import urllib
+import warnings
 
 import torch
 import tqdm
@@ -83,10 +84,15 @@ if __name__ == "__main__":
         if events.events.size > 0:
             sliced_events = grid.event_slicer(events.events, events.t_reconstruction)
             for i in range(len(sliced_events)):
-                event_grid, _ = grid.events_to_voxel_grid(sliced_events[i])
-                event_tensor = torch.from_numpy(event_grid)
-                if i== len(sliced_events) - 1:
-                    image_reconstructor.update_reconstruction(event_tensor, int(events.t_reconstruction)*1000, save=True)
-                    pbar.update(1)
+                event_slice = sliced_events[i]
+                if event_slice is None:
+                    warnings.warn('No events returned. We do not reconstruct for this timestamp')
                 else:
+                    event_grid, _ = grid.events_to_voxel_grid(sliced_events[i])
+                    event_grid = grid.normalize_voxel(event_grid)
+                    event_tensor = torch.from_numpy(event_grid)
                     image_reconstructor.update_reconstruction(event_tensor)
+                if i== len(sliced_events) - 1:
+                    rec_ts_nanoseconds = int(events.t_reconstruction)*1000
+                    image_reconstructor.save_reconstruction(rec_ts_nanoseconds)
+                    pbar.update(1)

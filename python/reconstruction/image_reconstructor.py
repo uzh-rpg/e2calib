@@ -18,6 +18,8 @@ class ImageReconstructor:
         self.width = width
         self.num_bins = num_bins
         self.options = options
+        self.events = None
+        self.reconstructed_image = None
 
         self.initialize(self.height, self.width, self.options)
 
@@ -55,7 +57,7 @@ class ImageReconstructor:
         self.image_writer = ImageWriter(options)
         self.image_display = ImageDisplay(options)
 
-    def update_reconstruction(self, event_tensor, event_tensor_id=None, save=False, stamp=None):
+    def update_reconstruction(self, event_tensor, event_tensor_id=None, stamp=None):
 
         # max duration without events before we reinitialize
         self.max_duration_before_reinit_s = 5.0
@@ -80,16 +82,16 @@ class ImageReconstructor:
                 if self.options.use_fp16:
                     events = events.half()
 
-                events = self.event_preprocessor(events)
+                self.events = self.event_preprocessor(events)
 
                 # Resize tensor to [1 x C x crop_size x crop_size] by applying zero padding
                 events_for_each_channel = {'grayscale': self.crop.pad(events)}
                 reconstructions_for_each_channel = {}
                 if self.perform_color_reconstruction:
-                    events_for_each_channel['R'] = self.crop_halfres.pad(events[:, :, 0::2, 0::2])
-                    events_for_each_channel['G'] = self.crop_halfres.pad(events[:, :, 0::2, 1::2])
-                    events_for_each_channel['W'] = self.crop_halfres.pad(events[:, :, 1::2, 0::2])
-                    events_for_each_channel['B'] = self.crop_halfres.pad(events[:, :, 1::2, 1::2])
+                    events_for_each_channel['R'] = self.crop_halfres.pad(self.events[:, :, 0::2, 0::2])
+                    events_for_each_channel['G'] = self.crop_halfres.pad(self.events[:, :, 0::2, 1::2])
+                    events_for_each_channel['W'] = self.crop_halfres.pad(self.events[:, :, 1::2, 0::2])
+                    events_for_each_channel['B'] = self.crop_halfres.pad(self.events[:, :, 1::2, 1::2])
 
                 # Reconstruct new intensity image for each channel (grayscale + RGBW if color reconstruction is enabled)
                 for channel in events_for_each_channel.keys():
@@ -121,7 +123,8 @@ class ImageReconstructor:
                     out = reconstructions_for_each_channel['grayscale']
 
             # Post-processing, e.g bilateral filter (on CPU)
-            out = self.image_filter(out)
-            if save and event_tensor_id is not None:
-                self.image_writer(out, event_tensor_id, events=events)
-            self.image_display(out, events)
+            self.reconstructed_image = self.image_filter(out)
+            self.image_display(self.reconstructed_image, self.events)
+
+    def save_reconstruction(self, event_tensor_id):
+        self.image_writer(self.reconstructed_image, event_tensor_id, events=self.events)
