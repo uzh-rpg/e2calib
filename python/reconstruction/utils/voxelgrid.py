@@ -17,14 +17,20 @@ class VoxelGrid:
         sliced_events = []
         t_start = events.t[0]
         t_end = t_reconstruction
-        window_time = (t_end - t_start + 1)/self.upsample_rate
+        window_time = (t_end - t_start + 1)//self.upsample_rate
         indices = [0]
+        max_idx = len(events.t) - 1
         for i in range(1, self.upsample_rate):
-            indices.append(np.where(events.t > i*window_time+t_start)[0][0])
+            idx = min(np.searchsorted(events.t, i*window_time+t_start, side='right'), max_idx)
+            indices.append(idx)
         indices.append(len(events.t)-1) # Add the last time timestamp
 
         max_event_time_in_event_slice = []
         for i in range(0, self.upsample_rate):
+            if indices[i+1] <= indices[i]:
+                assert indices[i+1] == indices[i]
+                sliced_events.append(None)
+                continue
             ts = events.t[indices[i]:indices[i+1]]
             sliced_events.append( Events(events.x[indices[i]:indices[i+1]],
                                         events.y[indices[i]:indices[i+1]],
@@ -35,7 +41,7 @@ class VoxelGrid:
     def convert_to_event_array(self, events: Events):
         ts = events.t
         event_array = np.stack((
-                np.asarray(ts, dtype="float32"),
+                np.asarray(ts, dtype="int64"),
                 np.asarray(events.x, dtype="float32"),
                 np.asarray(events.y, dtype="float32"),
                 np.asarray(events.p, dtype="float32"))).T
@@ -67,6 +73,7 @@ class VoxelGrid:
         ys = event_array[:, 2].astype(np.int)
         pols = event_array[:, 3]
         pols[pols == 0] = -1  # polarity should be +1 / -1
+        
 
         tis = ts.astype(np.int)
         dts = ts - tis
