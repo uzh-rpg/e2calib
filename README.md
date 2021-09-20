@@ -75,9 +75,13 @@ The calibration procedure is based on three steps:
 2. Reconstruction of images at a certain frequency from this file. Requires the activation of the conda environment `e2calib`.
 3. Calibration using your favorite image-based calibration toolbox.
 
-### Conversion to H5
+### Conversion to H5 from ROS bags
 
 The [conversion script](https://github.com/uzh-rpg/e2calib/blob/main/python/convert.py) simply requires the path to the event file and optionally a ros topic in case of a rosbag.
+
+### Conversion to H5 from ROCK logs
+
+The [conversion script](https://github.com/uzh-rpg/e2calib/blob/main/python/pocolog_convert.py) simply requires the path to the pocolog/rock file and the name of the outport (topic) of the events. In case of not output_file provided it will generate a .h5 file in the same folder where the pocolog file is located.
 
 ### Reconstruction
 

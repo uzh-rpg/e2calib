@@ -2,6 +2,7 @@ from pathlib import Path
 
 metavision_found = True
 ros_found = True
+pocolog_found = True
 try:
     import conversion.ros
 except ImportError:
@@ -12,12 +13,20 @@ try:
 except ImportError:
     print("Conversion from .raw is not possible. If you want to extract .raw files, please install Metavision 2.2")
     metavision_found = False
+try:
+    import conversion.pocolog
+except ImportError:
+    print("Conversion from .log is not possible. If you want to extract .log files, please install the ROCK packages specified in the README.md")
+    pocolog_found = False
 
 
 def get_generator(input_file: Path, delta_t_ms: int=1000, topic: str='/dvs/events'):
     if input_file.suffix == '.raw':
         assert metavision_found, 'Could not find Metavision packages'
         return lambda: conversion.prophesee.ev_generator(input_file, delta_t_ms=delta_t_ms)
+    if input_file.suffix == '.log':
+        assert pocolog_found, 'Could not find Metavision packages'
+        return lambda: conversion.pocolog.ev_generator(input_file, delta_t_ms=delta_t_ms, topic=topic)
     assert input_file.suffix == '.bag', f'File format {input_file.suffix} is not supported'
     assert ros_found, 'Could not not find ROS packages'
     return lambda: conversion.ros.ev_generator(input_file, delta_t_ms=delta_t_ms, topic=topic)
