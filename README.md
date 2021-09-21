@@ -77,11 +77,11 @@ The calibration procedure is based on three steps:
 
 ### Conversion to H5
 
-The [conversion script](https://github.com/uzh-rpg/e2calib_private/blob/main/python/convert.py) simply requires the path to the event file and optionally a ros topic in case of a rosbag.
+The [conversion script](https://github.com/uzh-rpg/e2calib/blob/main/python/convert.py) simply requires the path to the event file and optionally a ros topic in case of a rosbag.
 
 ### Reconstruction
 
-The [reconstruction](https://github.com/uzh-rpg/e2calib_private/blob/wip/manasi/python/offline_reconstruction.py) requires the h5 file to convert events to frames.
+The [reconstruction](https://github.com/uzh-rpg/e2calib/blob/main/python/offline_reconstruction.py) requires the h5 file to convert events to frames.
 Additionally, you also need to specify the height and width of the event camera and the frequency or timestamps at which you want to reconstruct the frames.
 As an example, to run the image reconstruction code on one of the example files use the following command:
 ```bash
