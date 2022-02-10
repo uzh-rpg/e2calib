@@ -13,9 +13,9 @@ def ev_generator(rawfile: Path, delta_t_ms: int=1000) -> Events:
 
     delta_t_us = delta_t_ms * 1000
     cd_data = load_td_data(rawfile)
-    for t in range(np.min(cd_data['t']), np.max(cd_data['t']), delta_t_ms):
-        ev = cd_data[cd_data['t']>t]
-        ev = ev[ev['t']<t+delta_t_ms]
+    for t in range(np.min(cd_data['t']), np.max(cd_data['t']), delta_t_us):
+        ev = cd_data[cd_data['t']>=t]
+        ev = ev[ev['t']<t+delta_t_us]
         is_sorted = np.all(ev['t'][:-1] <= ev['t'][1:])
         if not is_sorted:
             warnings.warn('Event timestamps are not sorted.', stacklevel=2)
