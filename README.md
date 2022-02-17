@@ -26,9 +26,10 @@ First, installation of packages for the conversion code that must be completed o
 Second, installation of packages in a conda environment to run the reconstruction code.
 
 ### Conversion to H5
-Our current conversion code supports 2 event file formats:
+Our current conversion code supports 3 event file formats:
 1. Rosbags with [dvs\_msgs](https://github.com/uzh-rpg/rpg_dvs_ros/tree/master/dvs_msgs)
 2. Prophesee raw format using [Metavision 2.2](https://docs.prophesee.ai/2.2.0/installation/index.html)
+2. Prophesee dat format using [Metavision 2.X](https://docs.prophesee.ai/stable/data_formats/file_formats/dat.html)
 
 Regardeless of the event file format:
 ```bash
@@ -42,6 +43,7 @@ pip3 install dataclasses # if your system Python version is < 3.7
 ```bash
 pip3 install --extra-index-url https://rospypi.github.io/simple/ rospy rosbag
 ```
+
 
 ### Image Reconstruction
 For running the reconstruction code, we create a new conda environment. Use an appropriate cuda version.
@@ -78,6 +80,10 @@ The calibration procedure is based on three steps:
 ### Conversion to H5
 
 The [conversion script](https://github.com/uzh-rpg/e2calib/blob/main/python/convert.py) simply requires the path to the event file and optionally a ros topic in case of a rosbag.
+
+If you have an older Metavision version (for example Metavision 2.0), first convert the '.raw' files to '.dat' and then convert it to h5 file format. 
+
+*Note* : The '.dat' file format takes up more space on the disk but for metavision 2.0, the python API can only read '.dat' format.
 
 ### Reconstruction
 
