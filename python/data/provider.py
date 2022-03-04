@@ -124,7 +124,7 @@ class SharedBufferConsumer:
     def get_events_until(self, time: int) -> Optional[Events]:
         # Returns events if successful, None otherwise.
 
-        assert time > self.last_time, f'time = {time}, last_time={self.last_time}'
+        assert time >= self.last_time, f'time = {time}, last_time={self.last_time}'
         # First ensure that there are enough events in the shared buffer.
         if self.update_shared_buffer(time):
             # Successfull update: Ensure that there are enough events in local buffer.
@@ -166,7 +166,7 @@ class SharedBufferConsumer:
         # Return True if shared buffer is up-to-date.
 
         # Clean shared buffer based on last_time first
-        assert time > self.last_time
+        assert time >= self.last_time
         self.shared_buffer.clean(self.last_time)
 
         # Add more events if time is larger than event timestamps in the shared buffer.
