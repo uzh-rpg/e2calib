@@ -3,6 +3,8 @@ from pathlib import Path
 # Pocolog bindings
 from pocolog_pybind import *
 
+import tqdm
+import warnings
 import numpy as np
 
 from data.format import Events
@@ -45,10 +47,15 @@ def ev_generator(logpath: Path, delta_t_ms: int=1000, topic: str='/dvs/events'):
 
     init = False
     last_time = 0
+    pbar = tqdm.tqdm(total=stream.get_size())
     for t in range(stream.get_size()):
         value = stream.get_sample(t)
         py_value = value.cast(recursive=True)
         value.destroy()
+        # Chech if the events array has at least one event
+        if len(py_value['events']) is 0:
+            continue
+
         if not init:
             init = True
             t_start_ns = py_value['events'][0].ts.to_microseconds()*1e03
@@ -65,4 +72,5 @@ def ev_generator(logpath: Path, delta_t_ms: int=1000, topic: str='/dvs/events'):
                 t_ev_acc_end_ns = t_ev_acc_end_ns + delta_t_ns
                 ev_acc = EventAccumulator()
                 ev_acc.add_event(event)
+        pbar.update(1)
 
