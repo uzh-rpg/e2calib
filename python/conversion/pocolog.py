@@ -7,29 +7,7 @@ import tqdm
 import warnings
 import numpy as np
 
-from data.format import Events
-
-class EventAccumulator:
-    def __init__(self):
-        self.x = list()
-        self.y = list()
-        self.p = list()
-        self.t = list()
-
-    def add_event(self, event):
-        self.x.append(event.x)
-        self.y.append(event.y)
-        self.p.append(int(event.polarity))
-        self.t.append(event.ts.to_microseconds())
-
-    def get_events(self):
-        events = Events(
-                np.asarray(self.x, dtype='uint16'),
-                np.asarray(self.y, dtype='uint16'),
-                np.asarray(self.p, dtype='uint8'),
-                np.asarray(self.t, dtype='int64'))
-        return events
-
+from data.accumulator import EventAccumulatorPocolog
 
 def ev_generator(logpath: Path, delta_t_ms: int=1000, topic: str='/dvs/events'):
     assert logpath.exists()
@@ -38,7 +16,7 @@ def ev_generator(logpath: Path, delta_t_ms: int=1000, topic: str='/dvs/events'):
     delta_t_ns = delta_t_ms * 10**6
 
     t_ev_acc_end_ns = None
-    ev_acc = EventAccumulator()
+    ev_acc = EventAccumulatorPocolog()
 
     multi_file_index = pocolog.MultiFileIndex()
     multi_file_index.create_index([str(logpath)])
@@ -70,7 +48,7 @@ def ev_generator(logpath: Path, delta_t_ms: int=1000, topic: str='/dvs/events'):
                 events = ev_acc.get_events()
                 yield events
                 t_ev_acc_end_ns = t_ev_acc_end_ns + delta_t_ns
-                ev_acc = EventAccumulator()
+                ev_acc = EventAccumulatorPocolog()
                 ev_acc.add_event(event)
         pbar.update(1)
 
