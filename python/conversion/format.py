@@ -25,7 +25,7 @@ def get_generator(input_file: Path, delta_t_ms: int=1000, topic: str='/dvs/event
         assert metavision_found, 'Could not find Metavision packages'
         return lambda: conversion.prophesee.ev_generator(input_file, delta_t_ms=delta_t_ms)
     if input_file.suffix == '.log':
-        assert pocolog_found, 'Could not find Metavision packages'
+        assert pocolog_found, 'Could not find Rock packages'
         return lambda: conversion.pocolog.ev_generator(input_file, delta_t_ms=delta_t_ms, topic=topic)
     assert input_file.suffix == '.bag', f'File format {input_file.suffix} is not supported'
     assert ros_found, 'Could not not find ROS packages'
