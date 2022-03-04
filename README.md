@@ -28,8 +28,9 @@ Second, installation of packages in a conda environment to run the reconstructio
 ### Conversion to H5
 Our current conversion code supports 3 event file formats:
 1. Rosbags with [dvs\_msgs](https://github.com/uzh-rpg/rpg_dvs_ros/tree/master/dvs_msgs)
-2. Prophesee raw format using [Metavision 2.2](https://docs.prophesee.ai/2.2.0/installation/index.html)
-2. Prophesee dat format using [Metavision 2.X](https://docs.prophesee.ai/stable/data_formats/file_formats/dat.html)
+2. Pocolog with [base/samples/EventArray](https://github.com/rock-core/base-orogen-types)
+3. Prophesee raw format using [Metavision 2.2](https://docs.prophesee.ai/2.2.0/installation/index.html)
+4. Prophesee dat format using [Metavision 2.X](https://docs.prophesee.ai/stable/data_formats/file_formats/dat.html)
 
 Regardeless of the event file format:
 ```bash
@@ -84,6 +85,31 @@ The [conversion script](https://github.com/uzh-rpg/e2calib/blob/main/python/conv
 If you have an older Metavision version (for example Metavision 2.0), first convert the '.raw' files to '.dat' and then convert it to h5 file format. 
 
 *Note* : The '.dat' file format takes up more space on the disk but for metavision 2.0, the python API can only read '.dat' format.
+
+### Conversion to H5 from Pocolog files
+
+Pocolog is the file format for logging data in [ROCK](https://www.rock-robotics.org/). It is equivalent to the bag format for ROS. More specifically [Pocolog](https://github.com/rock-core/tools-pocolog) is the tool to manupilate [log](https://github.com/rock-core/tools-logger) files.
+
+The [conversion script](https://github.com/uzh-rpg/e2calib/blob/main/python/convert.py) understands the Pocolog file format from the pocolog [conversion](https://github.com/uzh-rpg/e2calib/blob/main/python/conversion/pocolog.py) file. You need a ROCK installation with the Pocolog python bindings [Pocolog Pybind](https://github.com/jhidalgocarrio/tools-pocolog_pybind) installed in order to convert events in pocolog to h5 format. Please follow the installation guide to install ROCK on your system: [How to install ROCK](https://www.rock-robotics.org/documentation/installation.html). Afterwards clone the Pocolog Python bindings:
+
+```bash
+git clone git@github.com:jhidalgocarrio/tools-pocolog_pybind.git <rock-path>/tools/pocolog_pybind
+```
+
+Compile and install the Pocolog Python bindings:
+
+```bash
+source <rock-path>/env.sh
+cd <rock-path>/tools/pocolog_pybind
+amake
+python3 -m pip install <rock-path>/tools/pocolog_pybind
+```
+
+Afterward, you can simple use the [conversion script](https://github.com/uzh-rpg/e2calib/blob/main/python/convert.py) with the path to the pocolog file and the port name  (i.e.: similar to ros topic name) containing the events (e.g.: --topic /camera_prophesee.events).
+
+```bash
+python convert.py <pocolog_file> -t <port_name>
+```
 
 ### Reconstruction
 

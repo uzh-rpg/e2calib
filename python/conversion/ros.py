@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import numpy as np
+import tqdm
 import rosbag
 
 from data.format import Events
@@ -40,6 +41,7 @@ def ev_generator(bagpath: Path, delta_t_ms: int=1000, topic: str='/dvs/events'):
     init = False
     last_time = 0
     with rosbag.Bag(str(bagpath), 'r') as bag:
+        pbar = tqdm.tqdm(total=bag.get_message_count(topic))
         for topic, msg, ros_time in bag.read_messages(topics=[topic]):
             if not init:
                 init = True
@@ -57,3 +59,4 @@ def ev_generator(bagpath: Path, delta_t_ms: int=1000, topic: str='/dvs/events'):
                     t_ev_acc_end_ns = t_ev_acc_end_ns + delta_t_ns
                     ev_acc = EventAccumulator()
                     ev_acc.add_event(event)
+            pbar.update(1)
