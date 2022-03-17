@@ -162,7 +162,21 @@ python3 images_to_rosbag.py --rosbag_folder python/frames/ --image_folder  pytho
 
 In case you would like to combine images with other sensors for extrinsics calibration, please take a look at the [kalibr bagcreator script](https://github.com/ethz-asl/kalibr/wiki/bag-format#bagcreater) 
 
+Here are instructions to run kalibr in docker, using the [following docker image](https://hub.docker.com/r/stereolabs/kalibr). The following instructions are copied from there:
 
+```bash
+folder=path/to/calibration/bag/
+bagname=name_of.bag
+targetname=target.yaml
+topic1=/cam0/image_raw 
+topic2=/cam1/image_raw
+
+sudo snap install docker
+sudo docker pull stereolabs/kalibr
+xhost +local:root
+sudo docker run -it -e "DISPLAY" -e "QT_X11_NO_MITSHM=1" -v "/tmp/.X11-unix:/tmp/.X11-unix:rw" -v "$folder:/calib" stereolabs/kalibr:kinetic
+kalibr_calibrate_cameras --bag /calib/$bagname --target /calib/$targetname --models 'pinhole-radtan' 'pinhole-radtan' --topics $topic1 $topic2
+```
 
 ## Example Files
 For each file, we provide the original event file format (raw or rosbag) but also the already converted h5 file.
