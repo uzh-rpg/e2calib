@@ -8,7 +8,7 @@ This repository contains code that implements video reconstruction from event da
 
 If you use this code in an academic context, please cite the following work:
 
-Manasi Muglikar, Mathias Gehrig, [Daniel Gehrig](https://danielgehrig18.github.io/), [Davide Scaramuzza](http://rpg.ifi.uzh.ch/people_scaramuzza.html), "How to Calibrate Your Event Camera", Computer Vision and Pattern Recognition Workshops (CVPRW), 2021
+Manasi Muglikar, [Mathias Gehrig](https://magehrig.github.io/), [Daniel Gehrig](https://danielgehrig18.github.io/), [Davide Scaramuzza](http://rpg.ifi.uzh.ch/people_scaramuzza.html), "How to Calibrate Your Event Camera", Computer Vision and Pattern Recognition Workshops (CVPRW), 2021
 
 ```bibtex
 @InProceedings{Muglikar2021CVPR,
