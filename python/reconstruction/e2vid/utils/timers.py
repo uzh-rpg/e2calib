@@ -20,7 +20,7 @@ class CudaTimer:
         self.start.record()
         return self
 
-    def __exit__(self, *args):
+    def __exit__(self):
         self.end.record()
         torch.cuda.synchronize()
         cuda_timers[self.timer_name].append(self.start.elapsed_time(self.end))

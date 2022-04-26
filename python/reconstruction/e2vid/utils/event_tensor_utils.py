@@ -44,8 +44,7 @@ class EventPreprocessor:
 
         # Remove (i.e. zero out) the hot pixels
         if self.hot_pixel_mask is not None:
-            with CudaTimer('Remove hot pixels'):
-                events = events * self.hot_pixel_mask
+            events = events * self.hot_pixel_mask
 
         # Flip tensor vertically and horizontally
         if self.flip:
@@ -54,18 +53,17 @@ class EventPreprocessor:
         # Normalize the event tensor (voxel grid) so that
         # the mean and stddev of the nonzero values in the tensor are equal to (0.0, 1.0)
         if not self.no_normalize:
-            with CudaTimer('Normalization'):
-                nonzero_ev = (events != 0)
-                num_nonzeros = nonzero_ev.sum()
-                if num_nonzeros > 0:
-                    # compute mean and stddev of the **nonzero** elements of the event tensor
-                    # we do not use PyTorch's default mean() and std() functions since it's faster
-                    # to compute it by hand than applying those funcs to a masked array
+            nonzero_ev = (events != 0)
+            num_nonzeros = nonzero_ev.sum()
+            if num_nonzeros > 0:
+                # compute mean and stddev of the **nonzero** elements of the event tensor
+                # we do not use PyTorch's default mean() and std() functions since it's faster
+                # to compute it by hand than applying those funcs to a masked array
 
-                    mean = torch.sum(events, dtype=torch.float32) / num_nonzeros  # force torch.float32 to prevent overflows when using 16-bit precision
-                    stddev = torch.sqrt(torch.sum(events ** 2, dtype=torch.float32) / num_nonzeros - mean ** 2)
-                    mask = nonzero_ev.type_as(events)
-                    events = mask * (events - mean) / stddev
+                mean = torch.sum(events, dtype=torch.float32) / num_nonzeros  # force torch.float32 to prevent overflows when using 16-bit precision
+                stddev = torch.sqrt(torch.sum(events ** 2, dtype=torch.float32) / num_nonzeros - mean ** 2)
+                mask = nonzero_ev.type_as(events)
+                events = mask * (events - mean) / stddev
 
         return events
 
