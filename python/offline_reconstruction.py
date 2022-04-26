@@ -10,10 +10,10 @@ import tqdm
 
 from data.provider import DataProvider
 from data.rectimestamps import TimestampProviderFile, TimestampProviderRate
-from reconstruction.utils.loading_utils import load_model, get_device
-from reconstruction.image_reconstructor import ImageReconstructor
-from reconstruction.options.inference_options import set_inference_options
-from reconstruction.utils.voxelgrid import VoxelGrid
+from e2vid.utils.loading_utils import load_model, get_device
+from e2vid.image_reconstructor import ImageReconstructor
+from e2vid.options.inference_options import set_inference_options
+from e2vid.utils.voxelgrid import VoxelGrid
 
 
 def download_checkpoint(path_to_model):

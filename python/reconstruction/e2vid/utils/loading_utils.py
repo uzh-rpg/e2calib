@@ -1,5 +1,5 @@
 import torch
-from reconstruction.model.model import *
+from e2vid.model.model import *
 
 
 def load_model(path_to_model):

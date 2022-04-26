@@ -1,10 +1,10 @@
 import torch
-from reconstruction.model.model import *
-from reconstruction.utils.inference_utils import CropParameters, IntensityRescaler, ImageFilter, ImageWriter, UnsharpMaskFilter
-from reconstruction.utils.event_tensor_utils import EventPreprocessor
-from reconstruction.utils.image_display_utils import ImageDisplay
-from reconstruction.utils.inference_utils import upsample_color_image, merge_channels_into_color_image  # for color reconstruction
-from reconstruction.utils.timers import CudaTimer, cuda_timers
+from e2vid.model.model import *
+from e2vid.utils.inference_utils import CropParameters, IntensityRescaler, ImageFilter, ImageWriter, UnsharpMaskFilter
+from e2vid.utils.event_tensor_utils import EventPreprocessor
+from e2vid.utils.image_display_utils import ImageDisplay
+from e2vid.utils.inference_utils import upsample_color_image, merge_channels_into_color_image  # for color reconstruction
+from e2vid.utils.timers import CudaTimer, cuda_timers
 
 
 class ImageReconstructor:
