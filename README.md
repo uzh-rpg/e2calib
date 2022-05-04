@@ -58,6 +58,7 @@ conda install -y -c anaconda numpy scipy
 conda install -y -c conda-forge h5py opencv tqdm
 conda install -y -c pytorch pytorch torchvision cudatoolkit=$cuda_version
 
+pip install python/ # this installs e2vid
 ```
 
 The reconstruction code uses events saved in the h5 file format to reconstruct images with [E2VID](http://rpg.ifi.uzh.ch/docs/TPAMI19_Rebecq.pdf).

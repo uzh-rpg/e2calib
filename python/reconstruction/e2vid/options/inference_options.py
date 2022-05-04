@@ -1,17 +1,25 @@
+import os
+
+E2VID_PATH = os.path.join(os.path.dirname(__file__), "../pretrained/E2VID_lightweight.pth.tar")
+
 def set_inference_options(parser):
+    parser.add_argument('--verbose', '-v',  action='store_true', default=False, help='Verbose output')
+
+
+    parser.add_argument('-c', '--path_to_model', type=str,
+                        help='path to the model weights',
+                        default=E2VID_PATH)
 
     parser.add_argument('-o', '--output_folder', default='frames', type=str)  # if None, will not write the images to disk
     parser.add_argument('--dataset_name', default='e2calib', type=str)
 
-    parser.add_argument('--use_gpu', dest='use_gpu', action='store_true')
-    parser.set_defaults(use_gpu=True)
-
-    parser.add_argument('--use_fp16', dest='use_fp16', action='store_true')
-    parser.set_defaults(use_fp16=False)
-
+    parser.add_argument('--use_gpu', action='store_true')
+    parser.add_argument('--gpu_id',  type=int, default=0)
+    
+    parser.add_argument('--use_fp16', action='store_true')
+    
     """ Display """
-    parser.add_argument('--display', dest='display', action='store_true')
-    parser.set_defaults(display=False)
+    parser.add_argument('--display', action='store_true')
 
     parser.add_argument('--no-display_trackbars', dest='no_display_trackbars', action='store_true',
                         default=False)
@@ -22,7 +30,6 @@ def set_inference_options(parser):
     parser.set_defaults(no_show_reconstruction=False)
 
     parser.add_argument('--show_events', dest='show_events', action='store_true')
-    parser.set_defaults(show_events=False)
 
     parser.add_argument('--event_display_mode', default='red-blue', type=str,
                         help="Event display mode ('red-blue' or 'grayscale')")
@@ -50,7 +57,6 @@ def set_inference_options(parser):
 
     # (optional) flip the event tensors vertically
     parser.add_argument('--flip', dest='flip', action='store_true')
-    parser.set_defaults(flip=False)
 
     """ Tone mapping (i.e. rescaling of the image intensities)"""
     parser.add_argument('--Imin', default=0.0, type=float,
@@ -73,13 +79,12 @@ def set_inference_options(parser):
 
     """ Perform color reconstruction? (only use this flag with the DAVIS346color) """
     parser.add_argument('--color', dest='color', action='store_true')
-    parser.set_defaults(color=False)
 
     """ Advanced parameters """
     # disable normalization of input event tensors (saves a bit of time, but may produce slightly worse results)
     parser.add_argument('--no-normalize', dest='no_normalize', action='store_true')
-    parser.set_defaults(no_normalize=False)
 
     # disable recurrent connection (will severely degrade the results; for testing purposes only)
     parser.add_argument('--no-recurrent', dest='no_recurrent', action='store_true')
-    parser.set_defaults(no_recurrent=False)
+
+    return parser
