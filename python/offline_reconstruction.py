@@ -2,7 +2,6 @@ import argparse
 import os
 os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
 from pathlib import Path
-import urllib
 import warnings
 
 import tqdm
@@ -14,13 +13,6 @@ import e2vid
 from e2vid.options.inference_options import set_inference_options
 from e2vid.utils.voxelgrid import VoxelGrid
 
-
-def download_checkpoint(path_to_model):
-    print('Downloading E2VID checkpoint to {} ...'.format(path_to_model))
-    e2vid_model = urllib.request.urlopen('http://rpg.ifi.uzh.ch/data/E2VID/models/E2VID_lightweight.pth.tar')
-    with open(path_to_model, 'w+b') as f:
-        f.write(e2vid_model.read())
-    print('Done with downloading!')
 
 
 if __name__ == "__main__":
