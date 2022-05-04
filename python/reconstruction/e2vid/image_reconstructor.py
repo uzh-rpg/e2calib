@@ -4,7 +4,6 @@ from e2vid.utils.inference_utils import CropParameters, IntensityRescaler, Image
 from e2vid.utils.event_tensor_utils import EventPreprocessor
 from e2vid.utils.image_display_utils import ImageDisplay
 from e2vid.utils.inference_utils import upsample_color_image, merge_channels_into_color_image  # for color reconstruction
-from e2vid.utils.timers import CudaTimer, cuda_timers
 
 
 class ImageReconstructor:
