@@ -1,6 +1,5 @@
 from .util import robust_min, robust_max
 from .path_utils import ensure_dir
-from .timers import Timer, CudaTimer
 from .loading_utils import get_device
 from os.path import join
 from math import ceil, floor
@@ -176,11 +175,10 @@ class ImageFilter:
     def __call__(self, img):
 
         if self.bilateral_filter_sigma:
-            with Timer('Bilateral filter (sigma={:.2f})'.format(self.bilateral_filter_sigma)):
-                filtered_img = np.zeros_like(img)
-                filtered_img = cv2.bilateralFilter(
-                    img, 5, 25.0 * self.bilateral_filter_sigma, 25.0 * self.bilateral_filter_sigma)
-                img = filtered_img
+            filtered_img = np.zeros_like(img)
+            filtered_img = cv2.bilateralFilter(
+                img, 5, 25.0 * self.bilateral_filter_sigma, 25.0 * self.bilateral_filter_sigma)
+            img = filtered_img
 
         return img
 
@@ -282,34 +280,31 @@ def merge_channels_into_color_image(channels):
     :return a color image at full resolution
     """
 
-    with Timer('Merge color channels'):
+    assert('R' in channels)
+    assert('G' in channels)
+    assert('W' in channels)
+    assert('B' in channels)
+    assert('grayscale' in channels)
 
-        assert('R' in channels)
-        assert('G' in channels)
-        assert('W' in channels)
-        assert('B' in channels)
-        assert('grayscale' in channels)
+    # upsample each channel independently
+    for channel in ['R', 'G', 'W', 'B']:
+        channels[channel] = cv2.resize(channels[channel], dsize=None, fx=2, fy=2, interpolation=cv2.INTER_LINEAR)
 
-        # upsample each channel independently
-        for channel in ['R', 'G', 'W', 'B']:
-            channels[channel] = cv2.resize(channels[channel], dsize=None, fx=2, fy=2, interpolation=cv2.INTER_LINEAR)
+    # Shift the channels so that they all have the same origin
+    channels['B'] = shift_image(channels['B'], dx=1, dy=1)
+    channels['G'] = shift_image(channels['G'], dx=1, dy=0)
+    channels['W'] = shift_image(channels['W'], dx=0, dy=1)
 
-        # Shift the channels so that they all have the same origin
-        channels['B'] = shift_image(channels['B'], dx=1, dy=1)
-        channels['G'] = shift_image(channels['G'], dx=1, dy=0)
-        channels['W'] = shift_image(channels['W'], dx=0, dy=1)
+    # reconstruct the color image at half the resolution using the reconstructed channels RGBW
+    reconstruction_bgr = np.dstack([channels['B'],
+                                    cv2.addWeighted(src1=channels['G'], alpha=0.5,
+                                                    src2=channels['W'], beta=0.5,
+                                                    gamma=0.0, dtype=cv2.CV_8U),
+                                    channels['R']])
 
-        # reconstruct the color image at half the resolution using the reconstructed channels RGBW
-        reconstruction_bgr = np.dstack([channels['B'],
-                                        cv2.addWeighted(src1=channels['G'], alpha=0.5,
-                                                        src2=channels['W'], beta=0.5,
-                                                        gamma=0.0, dtype=cv2.CV_8U),
-                                        channels['R']])
+    reconstruction_grayscale = channels['grayscale']
 
-        reconstruction_grayscale = channels['grayscale']
-
-        # combine the full res grayscale resolution with the low res to get a full res color image
-        upsampled_img = upsample_color_image(reconstruction_grayscale, reconstruction_bgr)
-        return upsampled_img
-
+    # combine the full res grayscale resolution with the low res to get a full res color image
+    upsampled_img = upsample_color_image(reconstruction_grayscale, reconstruction_bgr)
+    
     return upsampled_img
