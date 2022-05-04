@@ -1,5 +1,6 @@
 from .util import robust_min, robust_max
 from .path_utils import ensure_dir
+from .timers import Timer, CudaTimer
 from .loading_utils import get_device
 from os.path import join
 from math import ceil, floor
@@ -70,24 +71,26 @@ class IntensityRescaler:
         param img: [1 x 1 x H x W] Tensor taking values in [0, 1]
         """
         if self.auto_hdr:
-            Imin = torch.min(img).item()
-            Imax = torch.max(img).item()
+            with CudaTimer('Compute Imin/Imax (auto HDR)'):
+                Imin = torch.min(img).item()
+                Imax = torch.max(img).item()
 
-            # ensure that the range is at least 0.1
-            Imin = np.clip(Imin, 0.0, 0.45)
-            Imax = np.clip(Imax, 0.55, 1.0)
+                # ensure that the range is at least 0.1
+                Imin = np.clip(Imin, 0.0, 0.45)
+                Imax = np.clip(Imax, 0.55, 1.0)
 
-            # adjust image dynamic range (i.e. its contrast)
-            if len(self.intensity_bounds) > self.auto_hdr_median_filter_size:
-                self.intensity_bounds.popleft()
+                # adjust image dynamic range (i.e. its contrast)
+                if len(self.intensity_bounds) > self.auto_hdr_median_filter_size:
+                    self.intensity_bounds.popleft()
 
-            self.intensity_bounds.append((Imin, Imax))
-            self.Imin = np.median([rmin for rmin, rmax in self.intensity_bounds])
-            self.Imax = np.median([rmax for rmin, rmax in self.intensity_bounds])
+                self.intensity_bounds.append((Imin, Imax))
+                self.Imin = np.median([rmin for rmin, rmax in self.intensity_bounds])
+                self.Imax = np.median([rmax for rmin, rmax in self.intensity_bounds])
 
-        img = 255.0 * (img - self.Imin) / (self.Imax - self.Imin)
-        img.clamp_(0.0, 255.0)
-        img = img.byte()  # convert to 8-bit tensor
+        with CudaTimer('Intensity rescaling'):
+            img = 255.0 * (img - self.Imin) / (self.Imax - self.Imin)
+            img.clamp_(0.0, 255.0)
+            img = img.byte()  # convert to 8-bit tensor
 
         return img
 
@@ -158,9 +161,10 @@ class UnsharpMaskFilter:
 
             self.gaussian_kernel = self.gaussian_kernel.type_as(img)
 
-            blurred = F.conv2d(img, self.gaussian_kernel,
-                                padding=self.gaussian_kernel_size // 2)
-            img = (1 + self.unsharp_mask_amount) * img - self.unsharp_mask_amount * blurred
+            with CudaTimer('Unsharp mask'):
+                blurred = F.conv2d(img, self.gaussian_kernel,
+                                   padding=self.gaussian_kernel_size // 2)
+                img = (1 + self.unsharp_mask_amount) * img - self.unsharp_mask_amount * blurred
         return img
 
 
@@ -175,10 +179,11 @@ class ImageFilter:
     def __call__(self, img):
 
         if self.bilateral_filter_sigma:
-            filtered_img = np.zeros_like(img)
-            filtered_img = cv2.bilateralFilter(
-                img, 5, 25.0 * self.bilateral_filter_sigma, 25.0 * self.bilateral_filter_sigma)
-            img = filtered_img
+            with Timer('Bilateral filter (sigma={:.2f})'.format(self.bilateral_filter_sigma)):
+                filtered_img = np.zeros_like(img)
+                filtered_img = cv2.bilateralFilter(
+                    img, 5, 25.0 * self.bilateral_filter_sigma, 25.0 * self.bilateral_filter_sigma)
+                img = filtered_img
 
         return img
 
@@ -280,31 +285,34 @@ def merge_channels_into_color_image(channels):
     :return a color image at full resolution
     """
 
-    assert('R' in channels)
-    assert('G' in channels)
-    assert('W' in channels)
-    assert('B' in channels)
-    assert('grayscale' in channels)
+    with Timer('Merge color channels'):
 
-    # upsample each channel independently
-    for channel in ['R', 'G', 'W', 'B']:
-        channels[channel] = cv2.resize(channels[channel], dsize=None, fx=2, fy=2, interpolation=cv2.INTER_LINEAR)
+        assert('R' in channels)
+        assert('G' in channels)
+        assert('W' in channels)
+        assert('B' in channels)
+        assert('grayscale' in channels)
 
-    # Shift the channels so that they all have the same origin
-    channels['B'] = shift_image(channels['B'], dx=1, dy=1)
-    channels['G'] = shift_image(channels['G'], dx=1, dy=0)
-    channels['W'] = shift_image(channels['W'], dx=0, dy=1)
+        # upsample each channel independently
+        for channel in ['R', 'G', 'W', 'B']:
+            channels[channel] = cv2.resize(channels[channel], dsize=None, fx=2, fy=2, interpolation=cv2.INTER_LINEAR)
 
-    # reconstruct the color image at half the resolution using the reconstructed channels RGBW
-    reconstruction_bgr = np.dstack([channels['B'],
-                                    cv2.addWeighted(src1=channels['G'], alpha=0.5,
-                                                    src2=channels['W'], beta=0.5,
-                                                    gamma=0.0, dtype=cv2.CV_8U),
-                                    channels['R']])
+        # Shift the channels so that they all have the same origin
+        channels['B'] = shift_image(channels['B'], dx=1, dy=1)
+        channels['G'] = shift_image(channels['G'], dx=1, dy=0)
+        channels['W'] = shift_image(channels['W'], dx=0, dy=1)
 
-    reconstruction_grayscale = channels['grayscale']
+        # reconstruct the color image at half the resolution using the reconstructed channels RGBW
+        reconstruction_bgr = np.dstack([channels['B'],
+                                        cv2.addWeighted(src1=channels['G'], alpha=0.5,
+                                                        src2=channels['W'], beta=0.5,
+                                                        gamma=0.0, dtype=cv2.CV_8U),
+                                        channels['R']])
 
-    # combine the full res grayscale resolution with the low res to get a full res color image
-    upsampled_img = upsample_color_image(reconstruction_grayscale, reconstruction_bgr)
-    
+        reconstruction_grayscale = channels['grayscale']
+
+        # combine the full res grayscale resolution with the low res to get a full res color image
+        upsampled_img = upsample_color_image(reconstruction_grayscale, reconstruction_bgr)
+        return upsampled_img
+
     return upsampled_img

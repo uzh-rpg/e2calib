@@ -1,10 +1,10 @@
 import torch
-from e2vid.model.model import *
+from reconstruction.model.model import *
 
 
-def load_model(path_to_model, device="cpu"):
+def load_model(path_to_model):
     print('Loading model {}...'.format(path_to_model))
-    raw_model = torch.load(path_to_model, map_location=device)
+    raw_model = torch.load(path_to_model)
     arch = raw_model['arch']
 
     try:

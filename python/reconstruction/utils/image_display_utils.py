@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from .timers import Timer
 from .inference_utils import make_event_preview
 from datetime import datetime
 
@@ -111,20 +112,23 @@ class ImageDisplay:
 
         img = self.crop_outer_border(img, self.border)
 
-        if not self.gamma == 1.0:
-            img = cv2.LUT(img, self.gamma_LUT)
+        with Timer('Gamma correction'):
+            if not self.gamma == 1.0:
+                img = cv2.LUT(img, self.gamma_LUT)
 
-        if not (self.contrast == 1.0 and self.brightness == 0.0):
-            cv2.convertScaleAbs(src=img, dst=img, alpha=self.contrast, beta=self.brightness)
+        with Timer('Contrast/Brighntess correction'):
+            if not (self.contrast == 1.0 and self.brightness == 0.0):
+                cv2.convertScaleAbs(src=img, dst=img, alpha=self.contrast, beta=self.brightness)
 
-        img_is_color = (len(img.shape) == 3)
-        if img_is_color and not self.saturation == 1.0:
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV).astype("float32")
-            (h, s, v) = cv2.split(img)
-            s = s * self.saturation
-            s = np.clip(s, 0, 255)
-            img = cv2.merge([h, s, v])
-            img = cv2.cvtColor(img.astype("uint8"), cv2.COLOR_HSV2BGR)
+        with Timer('Saturation correction'):
+            img_is_color = (len(img.shape) == 3)
+            if img_is_color and not self.saturation == 1.0:
+                img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV).astype("float32")
+                (h, s, v) = cv2.split(img)
+                s = s * self.saturation
+                s = np.clip(s, 0, 255)
+                img = cv2.merge([h, s, v])
+                img = cv2.cvtColor(img.astype("uint8"), cv2.COLOR_HSV2BGR)
 
         if self.show_events:
             assert(events is not None)

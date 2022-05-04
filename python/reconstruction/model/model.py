@@ -1,5 +1,5 @@
-from e2vid.base import BaseModel
-from e2vid.model.unet import UNet, UNetRecurrent
+from reconstruction.base import BaseModel
+from reconstruction.model.unet import UNet, UNetRecurrent
 
 
 class BaseE2VID(BaseModel):
