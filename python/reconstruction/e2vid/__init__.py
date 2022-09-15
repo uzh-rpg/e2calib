@@ -19,7 +19,7 @@ def download_checkpoint(path_to_model):
 
 class E2VID:
     def __init__(self, args):
-            # Load model to device
+        os.makedirs(os.path.dirname(args.path_to_model), exist_ok=True)
         if not os.path.isfile(args.path_to_model):
             download_checkpoint(args.path_to_model)
         assert os.path.isfile(args.path_to_model)
