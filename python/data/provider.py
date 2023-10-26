@@ -57,7 +57,7 @@ class SharedBufferProducer:
         self.h5f = h5py.File(str(h5file), 'r')
         self._finalizer = weakref.finalize(self, self.close_callback, self.h5f)
 
-        # Shared buffer (akin to producer-consumer pattern)
+        # Shared buffer (akin to producer-consumer pattern_colors)
         self.shared_ev_buffer = shared_ev_buffer
 
         # Number of events to be read from h5 per iteration.
@@ -104,7 +104,7 @@ class SharedBufferProducer:
 
 class SharedBufferConsumer:
     def __init__(self, h5file: Path):
-        # Shared buffer (akin to producer-consumer pattern)
+        # Shared buffer (akin to producer-consumer pattern_colors)
         self.shared_buffer = SharedEventBuffer()
         # We create a producer to fill up the shared buffer, if necessary.
         self.shared_buffer_producer = SharedBufferProducer(h5file, self.shared_buffer)

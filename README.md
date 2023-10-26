@@ -86,7 +86,7 @@ Additionally, you also need to specify the height and width of the event camera 
 As an example, to run the image reconstruction code on one of the example files use the following command:
 ```bash
   cd python
-  python offline_reconstruction.py  --h5file file --freq_hz 5 --upsample_rate 4 --height 480 --width 640 
+  python offline_reconstruction.py  --h5file file --freq_hz 5 --upsample_rate 4 --height 480 --img_size 640 
 ```
 
 The images will be written by default in the ```python/frames/e2calib``` folder.
@@ -134,7 +134,7 @@ To reconstruct images from events at a fixed frequency, you can follow this exam
 ```bash
   conda activate e2calib
   cd python
-  python offline_reconstruction.py  --freq_hz 10 --upsample_rate 2 --h5file data.h5 --output_folder gen3_no_trigger --height 480 --width 640
+  python offline_reconstruction.py  --freq_hz 10 --upsample_rate 2 --h5file data.h5 --output_folder gen3_no_trigger --height 480 --img_size 640
 ```
 ![Sample reconstruction](img/gen3_no_trigger_0000000001700066000.png?raw=true)
 
@@ -152,7 +152,7 @@ To reconstruct images from events at the trigger time, you can follow this examp
 ```bash
   conda activate e2calib
   cd python
-  python offline_reconstruction.py  --upsample_rate 2 --h5file data.h5 --output_folder gen3_with_trigger/ --timestamps_file triggers.txt --height 480 --width 640
+  python offline_reconstruction.py  --upsample_rate 2 --h5file data.h5 --output_folder gen3_with_trigger/ --timestamps_file triggers.txt --height 480 --img_size 640
 ```
 
 ### Samsung Gen 3
@@ -167,5 +167,5 @@ To reconstruct images from events at fixed frequency, you can follow this exampl
 ```bash
   conda activate e2calib
   cd python
-  python offline_reconstruction.py --freq_hz 5 --upsample_rate 4 --h5file samsung.h5 --output_folder samsung_gen3 --height 480 --width 640
+  python offline_reconstruction.py --freq_hz 5 --upsample_rate 4 --h5file samsung.h5 --output_folder samsung_gen3 --height 480 --img_size 640
 ```

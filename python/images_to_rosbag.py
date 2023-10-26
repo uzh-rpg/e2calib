@@ -51,7 +51,7 @@ if __name__ == "__main__":
                 rosimage.header.stamp = stamp_ros
                 rosimage.height = img.shape[0]
                 rosimage.width = img.shape[1]
-                rosimage.step = rosimage.width  #only with mono8! (step = width * byteperpixel * numChannels)
+                rosimage.step = rosimage.width  #only with mono8! (step = img_size * byteperpixel * numChannels)
                 rosimage.encoding = "mono8"
                 rosimage.data = img.tostring()
                 outbag.write(args.image_topic, rosimage, stamp_ros)

@@ -26,6 +26,10 @@ def get_reconstruction_timestamps(time: np.ndarray, pol: np.ndarray, time_offset
     assert np.all(np.abs(np.diff(pol)) == 1), 'polarity must alternate from trigger to trigger'
 
     assert pol[0] == 1, 'first ext trigger polarity must be positive'
+    if pol[-1] != 0:
+        pol = pol[:-1]
+        time = time[:-1]
+        print("Removing last trigger")
     assert pol[-1] == 0, 'last ext trigger polarity must be negative'
 
     rising_ts = time[pol==1]

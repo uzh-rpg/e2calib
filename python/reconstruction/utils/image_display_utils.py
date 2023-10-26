@@ -28,7 +28,7 @@ class ImageDisplay:
     """
 
     def __init__(self, options):
-        self.display = options.display
+        self.display = options.calib_colorboard
         self.display_trackbars = not options.no_display_trackbars
         self.show_reconstruction = not options.no_show_reconstruction
         self.show_events = options.show_events

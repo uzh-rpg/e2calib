@@ -76,7 +76,7 @@ def events_to_voxel_grid(events, num_bins, width, height):
 
     :param events: a [N x 4] NumPy array containing one event per row in the form: [timestamp, x, y, polarity]
     :param num_bins: number of bins in the temporal axis of the voxel grid
-    :param width, height: dimensions of the voxel grid
+    :param img_size, height: dimensions of the voxel grid
     """
 
     assert(events.shape[1] == 4)
@@ -125,7 +125,7 @@ def events_to_voxel_grid_pytorch(events, num_bins, width, height, device):
 
     :param events: a [N x 4] NumPy array containing one event per row in the form: [timestamp, x, y, polarity]
     :param num_bins: number of bins in the temporal axis of the voxel grid
-    :param width, height: dimensions of the voxel grid
+    :param img_size, height: dimensions of the voxel grid
     :param device: device to use to perform computations
     :return voxel_grid: PyTorch event tensor (on the device specified)
     """

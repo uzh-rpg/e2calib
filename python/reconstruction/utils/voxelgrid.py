@@ -46,7 +46,7 @@ class VoxelGrid:
         Build a voxel grid with bilinear interpolation in the time domain from a set of events.
         :param events: a [N x 4] NumPy array containing one event per row in the form: [timestamp, x, y, polarity]
         :param num_bins: number of bins in the temporal axis of the voxel grid
-        :param width, height: dimensions of the voxel grid
+        :param img_size, height: dimensions of the voxel grid
         """
         event_array = self.convert_to_event_array(events)
         assert(event_array.shape[1] == 4)
@@ -63,12 +63,12 @@ class VoxelGrid:
 
         event_array[:, 0] = (self.num_bins - 1) * (event_array[:, 0] - first_stamp) / deltaT
         ts = event_array[:, 0]
-        xs = event_array[:, 1].astype(np.int)
-        ys = event_array[:, 2].astype(np.int)
+        xs = event_array[:, 1].astype(int)
+        ys = event_array[:, 2].astype(int)
         pols = event_array[:, 3]
         pols[pols == 0] = -1  # polarity should be +1 / -1
 
-        tis = ts.astype(np.int)
+        tis = ts.astype(int)
         dts = ts - tis
         vals_left = pols * (1.0 - dts)
         vals_right = pols * dts
@@ -104,7 +104,7 @@ if __name__ == '__main__':
             width=8,
             height=5,
             t_reconstruction=31)
-    grid_repr = VoxelGrid(5, events.width, events.height, upsample_rate=2)
+    grid_repr = VoxelGrid(5, events.img_size, events.height, upsample_rate=2)
     sliced_events = grid_repr.event_slicer(events)
     voxel_grid = []
     for i in range(len(sliced_events)):

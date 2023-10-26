@@ -213,7 +213,7 @@ class ConvLSTM(nn.Module):
 
         prev_hidden, prev_cell = prev_state
 
-        # data size is [batch, channel, height, width]
+        # data size is [batch, channel, height, img_size]
         stacked_inputs = torch.cat((input_, prev_hidden), 1)
         gates = self.Gates(stacked_inputs)
 
@@ -268,7 +268,7 @@ class ConvGRU(nn.Module):
             state_size = [batch_size, self.hidden_size] + list(spatial_size)
             prev_state = torch.zeros(state_size, dtype=input_.dtype).to(input_.device)
 
-        # data size is [batch, channel, height, width]
+        # data size is [batch, channel, height, img_size]
         stacked_inputs = torch.cat([input_, prev_state], dim=1)
         update = torch.sigmoid(self.update_gate(stacked_inputs))
         reset = torch.sigmoid(self.reset_gate(stacked_inputs))

@@ -32,7 +32,7 @@ if __name__ == "__main__":
                         help='path to the model weights',
                         default='reconstruction/pretrained/E2VID_lightweight.pth.tar')
     parser.add_argument('--height', type=int, default=480)
-    parser.add_argument('--width', type=int, default=640)
+    parser.add_argument('--img_size', type=int, default=640)
     parser.add_argument('--gpu_id',  type=int, default=0)
     parser.add_argument('--freq_hz', '-fhz', type=int, default=0, help='Frequency for saving the reconstructed images from events')
     parser.add_argument('--timestamps_file', '-tsf', help='Path to txt file containing image reconstruction timestamps')

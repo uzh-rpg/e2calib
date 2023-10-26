@@ -9,7 +9,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('h5file', help='Path to h5 file containing events for reconstruction.')
     parser.add_argument('height', type=int, help='Height of image sensor')
-    parser.add_argument('width', type=int, help='Width of image sensor')
+    parser.add_argument('img_size', type=int, help='Width of image sensor')
     parser.add_argument('--freq_hz', '-fhz', type=int, default=0, help='Frequency for reconstructing frames from events')
     parser.add_argument('--timestamps_file', '-tsf', help='Path to txt file containing image reconstruction timestamps')
 
@@ -18,7 +18,7 @@ if __name__ == '__main__':
     h5_path = Path(args.h5file)
     freq_hz = args.freq_hz
     height = args.height
-    width = args.width
+    img_size = args.width
 
     timestamp_provider = None
     if freq_hz > 0:
@@ -28,7 +28,7 @@ if __name__ == '__main__':
         assert timestamps_file.exists()
         timestamp_provider = TimestampProviderFile(timestamps_file)
 
-    data_provider = DataProvider(h5_path, height=height, width=width, timestamp_provider=timestamp_provider)
+    data_provider = DataProvider(h5_path, height=height, width=img_size, timestamp_provider=timestamp_provider)
 
     for events in data_provider:
         if events.events.size > 0:
