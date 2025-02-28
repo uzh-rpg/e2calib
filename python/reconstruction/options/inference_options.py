@@ -1,10 +1,12 @@
+import torch
+
 def set_inference_options(parser):
 
     parser.add_argument('-o', '--output_folder', default='frames', type=str)  # if None, will not write the images to disk
     parser.add_argument('--dataset_name', default='e2calib', type=str)
 
     parser.add_argument('--use_gpu', dest='use_gpu', action='store_true')
-    parser.set_defaults(use_gpu=True)
+    parser.set_defaults(use_gpu=torch.cuda.is_available())
 
     parser.add_argument('--use_fp16', dest='use_fp16', action='store_true')
     parser.set_defaults(use_fp16=False)

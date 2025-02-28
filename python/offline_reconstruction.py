@@ -64,8 +64,8 @@ if __name__ == "__main__":
     if not os.path.isfile(args.path_to_model):
         download_checkpoint(args.path_to_model)
     assert os.path.isfile(args.path_to_model)
-    model = load_model(args.path_to_model)
     device = get_device(args.use_gpu, args.gpu_id)
+    model = load_model(args.path_to_model, device)
     model = model.to(device)
     model.eval()
 
