@@ -151,3 +151,32 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+###### Large / data files ######
+
+# ROS bags
+*.bag
+*.db3
+*.mcap
+metadata.yaml
+
+# Event / calibration data
+*.h5
+*.hdf5
+*.raw
+*.dat
+*.txt.gz
+
+# Reconstructed frames and output images
+python/frames/
+frames/
+rgb_frames/
+
+# Pretrained model weights
+*.pth
+*.pth.tar
+*.pt
+*.ckpt
+
+# IDE
+.vscode/
