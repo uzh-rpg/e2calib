@@ -1,12 +1,20 @@
 #!/usr/bin/env python3
-"""Convert ROS2 bag to e2calib H5 (events) and PNG frames (RGB).
+"""Convert ROS2 bag to e2calib H5 (events), RGB PNG frames, and RGB timestamps file.
 
 Usage:
-    python convert_ros2_bag.py <bag_dir> [output.h5] [--rgb_dir <dir>] [--no_events] [--no_rgb]
+    python convert_ros2_bag.py <bag_dir> [output.h5] [--rgb_dir <dir>] [--no_events] [--no_rgb] [--overwrite]
 
 The bag must contain:
   /events  sensor_msgs/msg/PointCloud2  (fields: x, y, t, polarity — all float32)
   /rgb     sensor_msgs/msg/Image
+
+After running this script, reconstruct event frames synchronized to RGB timestamps:
+    conda activate e2calib
+    python offline_reconstruction.py \\
+        --h5file <output.h5> \\
+        --timestamps_file <bag_dir>/../rgb_timestamps.txt \\
+        --upsample_rate 2 --height 480 --width 640 \\
+        --output_folder <bag_dir>/../frames --use_gpu
 """
 
 import sys
@@ -73,7 +81,7 @@ def save_events(reader, typestore, output_h5: Path, topic: str = '/events', over
     print(f"Events saved → {output_h5}")
 
 
-def save_rgb_frames(reader, typestore, rgb_dir: Path, topic: str = '/rgb'):
+def save_rgb_frames(reader, typestore, rgb_dir: Path, timestamps_file: Path, topic: str = '/rgb'):
     connections = [c for c in reader.connections if c.topic == topic]
     if not connections:
         available = [c.topic for c in reader.connections]
@@ -82,14 +90,18 @@ def save_rgb_frames(reader, typestore, rgb_dir: Path, topic: str = '/rgb'):
     rgb_dir.mkdir(parents=True, exist_ok=True)
 
     print(f"Reading RGB frames from {topic} ...")
+    timestamps_us = []
     count = 0
+
     for connection, timestamp, rawdata in reader.messages(connections=connections):
         msg = typestore.deserialize_cdr(rawdata, connection.msgtype)
 
         ts_ns = int(msg.header.stamp.sec) * 1_000_000_000 + msg.header.stamp.nanosec
-        img_data = np.frombuffer(bytes(msg.data), dtype=np.uint8)
+        ts_us = ts_ns // 1000
 
+        img_data = np.frombuffer(bytes(msg.data), dtype=np.uint8)
         encoding = msg.encoding.lower()
+
         if encoding in ('rgb8',):
             img = img_data.reshape((msg.height, msg.width, 3))
             img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
@@ -106,12 +118,18 @@ def save_rgb_frames(reader, typestore, rgb_dir: Path, topic: str = '/rgb'):
 
         fname = rgb_dir / f"{ts_ns:019d}.png"
         cv2.imwrite(str(fname), img)
+        timestamps_us.append(ts_us)
         count += 1
 
-    print(f"RGB frames saved : {count} frames → {rgb_dir}")
+    # Save timestamps in microseconds for offline_reconstruction.py --timestamps_file
+    np.savetxt(str(timestamps_file), np.array(timestamps_us, dtype=np.int64), fmt='%d')
+
+    print(f"RGB frames saved     : {count} frames → {rgb_dir}")
+    print(f"RGB timestamps saved : {count} entries → {timestamps_file}")
+    print(f"  (use --timestamps_file {timestamps_file} for synchronized event reconstruction)")
 
 
-def convert(bag_dir: str, output_h5: str, rgb_dir: str,
+def convert(bag_dir: str, output_h5: str, rgb_dir: str, timestamps_file: str,
             do_events: bool = True, do_rgb: bool = True, overwrite: bool = False):
     typestore = get_typestore(Stores.ROS2_HUMBLE)
 
@@ -119,7 +137,7 @@ def convert(bag_dir: str, output_h5: str, rgb_dir: str,
         if do_events:
             save_events(reader, typestore, Path(output_h5), overwrite=overwrite)
         if do_rgb:
-            save_rgb_frames(reader, typestore, Path(rgb_dir))
+            save_rgb_frames(reader, typestore, Path(rgb_dir), Path(timestamps_file))
 
 
 if __name__ == '__main__':
@@ -130,16 +148,19 @@ if __name__ == '__main__':
                         help='Output H5 file path (default: <bag_dir>/../events.h5)')
     parser.add_argument('--rgb_dir', default='',
                         help='Output folder for RGB PNGs (default: <bag_dir>/../rgb_frames)')
+    parser.add_argument('--timestamps_file', default='',
+                        help='Output path for RGB timestamps txt (default: <bag_dir>/../rgb_timestamps.txt)')
     parser.add_argument('--no_events', action='store_true', help='Skip event conversion')
     parser.add_argument('--no_rgb', action='store_true', help='Skip RGB extraction')
     parser.add_argument('--overwrite', action='store_true', help='Overwrite existing output files')
     args = parser.parse_args()
 
     bag_dir = Path(args.bag_dir)
-    output_h5 = args.output_h5 or str(bag_dir.parent / 'events.h5')
-    rgb_dir   = args.rgb_dir   or str(bag_dir.parent / 'rgb_frames')
+    output_h5       = args.output_h5       or str(bag_dir.parent / 'events.h5')
+    rgb_dir         = args.rgb_dir         or str(bag_dir.parent / 'rgb_frames')
+    timestamps_file = args.timestamps_file or str(bag_dir.parent / 'rgb_timestamps.txt')
 
-    convert(bag_dir, output_h5, rgb_dir,
+    convert(bag_dir, output_h5, rgb_dir, timestamps_file,
             do_events=not args.no_events,
             do_rgb=not args.no_rgb,
             overwrite=args.overwrite)

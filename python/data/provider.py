@@ -203,5 +203,9 @@ class DataProvider:
 
         events = self.shared_buffer_consumer.get_events_until(t_reconstruction_us)
         if events is None:
-            raise StopIteration
+            events = Events(
+                np.array([], dtype=np.uint16),
+                np.array([], dtype=np.uint16),
+                np.array([], dtype=np.uint8),
+                np.array([], dtype=np.int64))
         return EventsForReconstruction(events, self.width, self.height, t_reconstruction_us)

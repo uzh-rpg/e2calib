@@ -74,3 +74,8 @@ if __name__ == "__main__":
                     rec_ts_nanoseconds = int(events.t_reconstruction)*1000
                     reconstructor.image_reconstructor.save_reconstruction(rec_ts_nanoseconds)
                     pbar.update(1)
+        else:
+            # No events for this timestamp (events exhausted): save last reconstructed frame.
+            rec_ts_nanoseconds = int(events.t_reconstruction)*1000
+            reconstructor.image_reconstructor.save_reconstruction(rec_ts_nanoseconds)
+            pbar.update(1)

@@ -1,0 +1,5 @@
+target_type: 'checkerboard'
+targetCols: 9
+targetRows: 6
+rowSpacingMeters: 0.0215
+colSpacingMeters: 0.0215
